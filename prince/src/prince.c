@@ -22,7 +22,7 @@
 #include "prince.h"
 #include <unistd.h>
 #include <time.h>
-
+#include "../../performance_measure/performance.h"
 char* read_file_content(char *filename)
 {
     char *buffer = NULL;
@@ -79,7 +79,11 @@ main(int argc, char* argv[]){
     ph->bc_degree_map = (map_id_degree_bc *) malloc(sizeof(map_id_degree_bc));
     /*cycle each 'refresh' seconds*/
     do{
+        struct  data_last dl;
+        set_last_val(&dl);
+        log_start("cpp_cpu_tot.txt");
         sleep(ph->refresh);
+        log_start("cpp_cpu_algo.txt");
         ph->gp = new_graph_parser(ph->weights, ph->heuristic?1:0);
         ph->rp = new_plugin_p(ph->host, ph->port, ph->gp, ph->json_type);
         if(!get_topology_p(ph->rp)){
@@ -87,12 +91,15 @@ main(int argc, char* argv[]){
             continue;
             
         }
+        struct  data_last dl1;
+        set_last_val(&dl1);
         if(ph->rp->self_id)
             ph->self_id = strdup(ph->rp->self_id);
         clock_t start = clock();
         graph_parser_calculate_bc(ph->gp);
         clock_t end = clock();
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
+        int nodes_num_to_log=ph->bc_degree_map->size;
         ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
         printf("Calculation time: %fs\n", ph->opt_t.exec_time);
         if (!compute_timers(ph)){
@@ -105,6 +112,8 @@ main(int argc, char* argv[]){
             continue;
         }
         delete_plugin_p(ph->rp);
+        log_cpu_info(get_percentage(&dl),"cpp_cpu_tot.txt",nodes_num_to_log);
+        log_cpu_info(get_percentage(&dl1),"cpp_cpu_algo.txt",nodes_num_to_log);
     }while(ph->refresh);
     delete_prince_handler(ph);
 #else
@@ -115,11 +124,17 @@ main(int argc, char* argv[]){
     struct graph_parser * gp_p=(struct graph_parser *)ph->gp ;
     ph->rp = new_plugin_p(ph->host, ph->port, ph->gp, ph->json_type);
     do{
+        struct  data_last dl;
+        set_last_val(&dl);
+        log_start("c_cpu_tot.txt");
         sleep(ph->refresh);
+        log_start("c_cpu_algo.txt");
         if(!get_topology_p(ph->rp)){
             printf("Error getting topology");
             continue;
         }
+        struct  data_last dl1;
+        set_last_val(&dl1);
         if(ph->rp->self_id){
             if(ph->self_id!=0)
                 free(ph->self_id);
@@ -132,6 +147,7 @@ main(int argc, char* argv[]){
         ph->bc_degree_map->size=gp_p->g.nodes.size;
         ph->bc_degree_map->map=0;
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
+        int nodes_num_to_log=ph->bc_degree_map->size;
         ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
         printf("\nCalculation time: %fs\n", ph->opt_t.exec_time);
         if (!compute_timers(ph)){
@@ -148,6 +164,8 @@ main(int argc, char* argv[]){
         bc_degree_map_delete(ph->bc_degree_map);
         free_graph(&(gp_p->g));
         init_graph(&(gp_p->g));
+        log_cpu_info(get_percentage(&dl),"c_cpu_tot.txt",nodes_num_to_log);
+        log_cpu_info(get_percentage(&dl1),"c_cpu_algo.txt",nodes_num_to_log);
     }while(ph->refresh);
     delete_prince_handler(ph);
 #endif	

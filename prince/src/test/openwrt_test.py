@@ -58,7 +58,7 @@ def composeNetJson(graph):
 
 
 class server:
-    def __init__(self,port=8080):
+    def __init__(self,port=8081):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind(('', port))
         self.s.listen(10)
@@ -71,10 +71,7 @@ class server:
             conn, addr = self.s.accept()
             data=conn.recv(1024)
             if data.strip() == "/netjsoninfo filter graph ipv6_0/quit":
-                #g=nx.read_weighted_edgelist("input.json")
-                #json_netjson = json.dumps(composeNetJson(graph))
-                with open('error_graph.json', 'r') as myfile:
-                    json_netjson=myfile.read().replace('\n', '')
+                json_netjson = json.dumps(composeNetJson(graph))
                 conn.send(json_netjson)
                 conn.close()
             elif data:
@@ -93,9 +90,7 @@ class server:
 
 def main():
     s=server()
-    s.get_timer(0);
-    return
-    for i in range(2,21):
+    for i in range(10,11):
         file="data/"+str(i*100)
         mkdir(file)
         executions= []
@@ -104,7 +99,6 @@ def main():
             g=nx.read_weighted_edgelist(file+"/"+str(j))
             executions.append(s.get_timer(g))
         print(i*100,mean(executions),var(executions))
-    s.__exit__()
 
 if __name__ == "__main__":
     #print(datetime.datetime.now())

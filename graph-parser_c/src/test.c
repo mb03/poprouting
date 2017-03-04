@@ -56,8 +56,7 @@ char* read_file_content(char *filename)
     return buffer;
 }
 
-/*
- * 
+
 
 int main(int argc, char** argv) {
     if(argc==1)
@@ -66,7 +65,8 @@ int main(int argc, char** argv) {
     //to remove in case of different test
     multithread=false;
     if(argc==3){
-        stop_computing_if_unchanged=atoi(argv[2])==1;
+	multithread=atoi(argv[2])==1;
+        //stop_computing_if_unchanged=atoi(argv[2])==1;
     }
     c_graph_parser* cgp=new_graph_parser(1, heuristic);
     char * file_content=read_file_content("input.json");
@@ -93,5 +93,6 @@ int main(int argc, char** argv) {
     delete_graph_parser(cgp);
     return (EXIT_SUCCESS);
 }
-
+/*
+ * 
  */

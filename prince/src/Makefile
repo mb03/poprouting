@@ -1,4 +1,4 @@
-SRCS =  prince.c lib/ini.c parser.c
+SRCS =  prince.c lib/ini.c parser.c ../../performance_measure/performance.c
 SRCS_C =  ../../graph-parser_c/src/brandes.c ../../graph-parser_c/src/biconnected.c  ../../graph-parser_c/src/graph_parser.c ../../graph-parser_c/src/graph/graph.c ../../graph-parser_c/src/graph/list.c
 TARGET = prince
 TARGET_C= prince_c
