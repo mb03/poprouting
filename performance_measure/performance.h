@@ -22,8 +22,6 @@ extern "C" {
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <sys/times.h>
-#include <sys/vtimes.h>
 #include <stddef.h>
     
     struct data_last{
