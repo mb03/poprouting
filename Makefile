@@ -10,8 +10,12 @@ libs:
 cpp:
 	$(MAKE) -C graph-parser/src
 	cp prince/src/common_c++.h prince/src/common.h
-	$(CXX) prince/src/prince.c prince/src/common_c.h prince/src/parser.c prince/src/lib/ini.c performance_measure/performance.c  --std=c++11 -lgraphparser -Wwrite-strings -o b.out  -ldl -ljson-c -o output/prince
+	$(CXX) prince/src/prince.c prince/src/common_c.h prince/src/parser.c prince/src/lib/ini.c performance_measure/performance.c  --std=c++11 -Lgraph-parser/build -lgraphparser -Wwrite-strings -ldl -ljson-c -o output/prince  
+	$(CXX)  -shared -fPIC prince/src/olsr.c prince/src/socket.c prince/src/parser.c -o output/libprince_olsr.so
+	$(CXX)  -shared -fPIC prince/src/oonf.c prince/src/socket.c prince/src/parser.c -o output/libprince_oonf.so
 	rm prince/src/common.h
+
+
 clean:
 	rm *.o
 out:
