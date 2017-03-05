@@ -75,12 +75,11 @@ void get_cpu_info(char * c, unsigned long long int * utime, unsigned long long i
     fclose(file);
 }
 
-unsigned long current_time_micros(){
+unsigned long  current_time_millis(){
     struct timeval tv;
     gettimeofday(&tv,NULL);
-    return 1000000 * tv.tv_sec + tv.tv_usec;
+    return 1000 * tv.tv_sec + tv.tv_usec/1000;
 }
-
 
 char log_memory_info(char * status){
     int real=-1,virtual_s=-1;
@@ -96,8 +95,7 @@ char log_memory_info(char * status){
         printf("Error opening file!\n");
         exit(1);
     }
-    
-    fprintf(f, "%lu\t%d\t%d\n", current_time_micros(),real,virtual_s);
+    fprintf(f, "%lu\t%d\t%d\n", current_time_millis(),real,virtual_s);
     
     fclose(f);
     
@@ -119,9 +117,8 @@ void log_cpu_info(double percentage,char *filename,int nodenum){
         printf("Error opening file!\n");
         exit(1);
     }
-    
-    fprintf(f, "%lu\t%d\t%f\n", current_time_micros(),nodenum,percentage);
-    
+
+    fprintf(f, "%lu\t%d\t%f\n",current_time_millis(),nodenum,percentage);
     fclose(f);
     
 }
@@ -137,7 +134,8 @@ void log_start(char *filename){
         printf("Error opening file!\n");
         exit(1);
     }
-    fprintf(f, "%lu\ttstart\n", current_time_micros());
+
+    fprintf(f, "%lu\ttstart\n",current_time_millis());
     fclose(f);
     
 }
@@ -157,7 +155,7 @@ void set_last_val(struct  data_last * dl){
     init_log_cpu_info("self");
     unsigned long long int utime=0,stime=0;
     get_cpu_info(cpu_file,&utime,&stime);
-    dl->time_micros=current_time_micros();
+    dl->time_micros=current_time_millis();
     dl->last_cpu_ticks=utime+stime;
     if(frequency==0)
         frequency=sysconf(_SC_CLK_TCK);;
@@ -166,7 +164,7 @@ void set_last_val(struct  data_last * dl){
 int get_percentage(struct  data_last * dl){
     unsigned long long int utime=0,stime=0;
     get_cpu_info(cpu_file,&utime,&stime);
-    long time=current_time_micros();
+    long time=current_time_millis();
     long ticks=utime+stime-dl->last_cpu_ticks;
     double time_exe=((double)(time-dl->time_micros))/1000000;
     //printf("frequency %f %ld\n",time_exe,ticks);
@@ -176,30 +174,3 @@ int get_percentage(struct  data_last * dl){
     return percent>100?100:percent;
     
 }
-/*
-int main(int argc, char *argv[]){
-    if (argc>2)
-	return;
-    struct  data_last dl;
-    set_last_val(&dl);
-    struct  data_last dl2;
-    set_last_val(&dl2);
-    int s=0;
-    for(;s<10;s++){
-        printf("percentage1 %d\n",get_percentage(&dl));
-        int i=0;
-        for(;i<1000;i++){
-            int j=0;
-            for(;j<1000;j++){
-                int k=0;
-                for(;k<100;k++){
-                    
-                }
-            }
-        }
-        usleep(200);
-        printf("percentage2 %d\n",get_percentage(&dl2));
-    }
-    
-    
-}*/

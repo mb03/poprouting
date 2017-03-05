@@ -82,7 +82,6 @@ main(int argc, char* argv[]){
         set_last_val(&dl);
         log_start("cpp_cpu_tot.txt");
         sleep(ph->refresh);
-        log_start("cpp_cpu_algo.txt");
         ph->gp = new_graph_parser(ph->weights, ph->heuristic?1:0);
         ph->rp = new_plugin_p(ph->host, ph->port, ph->gp, ph->json_type);
         if(!get_topology_p(ph->rp)){
@@ -90,6 +89,7 @@ main(int argc, char* argv[]){
             continue;
             
         }
+        log_start("cpp_cpu_algo.txt");
         struct  data_last dl1;
         set_last_val(&dl1);
         if(ph->rp->self_id)
@@ -127,11 +127,11 @@ main(int argc, char* argv[]){
         set_last_val(&dl);
         log_start("c_cpu_tot.txt");
         sleep(ph->refresh);
-        log_start("c_cpu_algo.txt");
         if(!get_topology_p(ph->rp)){
             printf("Error getting topology");
             continue;
         }
+        log_start("c_cpu_algo.txt");
         struct  data_last dl1;
         set_last_val(&dl1);
         if(ph->rp->self_id){
