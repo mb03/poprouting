@@ -40,15 +40,15 @@ int get_topology(routing_plugin *o)
         close(sd);
         return 0;
     }
-    if(o->recv_buffer!=0){
-        free(o->recv_buffer);
-        o->recv_buffer=0;
-    }
     struct topology *t = parse_netjson(o->recv_buffer);
     if(!t){
         printf("can't parse netjson\n %s \n", o->recv_buffer);
         close(sd);
         return 0;
+    }
+    if(o->recv_buffer!=0){
+        free(o->recv_buffer);
+        o->recv_buffer=0;
     }
     graph_parser_parse_simplegraph(o->gp, t);
     if(o->self_id!=0)
