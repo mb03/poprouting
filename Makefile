@@ -10,14 +10,17 @@ libs:
 cpp:
 	$(MAKE) -C graph-parser/src
 	cp prince/src/common_c++.h prince/src/common.h
-	$(CXX) prince/src/prince.c prince/src/common_c.h prince/src/parser.c prince/src/lib/ini.c performance_measure/performance.c  --std=c++11 -Lgraph-parser/build -lgraphparser -Wwrite-strings -ldl -ljson-c -o output/prince  
-	$(CXX)  -shared -fPIC prince/src/olsr.c prince/src/socket.c prince/src/parser.c -o output/libprince_olsr.so
-	$(CXX)  -shared -fPIC prince/src/oonf.c prince/src/socket.c prince/src/parser.c -o output/libprince_oonf.so
+	$(CXX) prince/src/prince.c prince/src/common_c.h prince/src/parser.c prince/src/lib/ini.c performance_measure/performance.c -g  --std=c++11 -Lgraph-parser/build -lgraphparser -Wwrite-strings -ldl -ljson-c -o output/prince  
+	$(MAKE) -C prince/src libprince_olsr.so
+	$(MAKE) -C prince/src libprince_oonf.so
+	cp prince/build/* output/
 	rm prince/src/common.h
 
-
 clean:
-	rm *.o
+	rm -rf *.o
+	rm -rf *~
+	rm -rf output
+
 out:
 	mkdir -p output
 	mkdir -p prince/build/
@@ -31,7 +34,7 @@ install:
 	cp output/prince_c /usr/bin/
 	cp output/prince /usr/bin
 logger:
-	cc performance_measure/performance_runner.c performance_measure/performance.c -o output/logger
+	$(CC) performance_measure/performance_runner.c performance_measure/performance.c -o output/logger
 uninstall:
 	rm -f /usr/lib/libgraphparser.so
 	rm -f /usr/lib/libprince_oonf.so

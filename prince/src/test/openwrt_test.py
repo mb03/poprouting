@@ -58,11 +58,11 @@ def composeNetJson(graph):
 
 
 class server:
-    def __init__(self,port=8081):
+    def __init__(self,port=8080):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind(('', port))
         self.s.listen(10)
-    def get_timer(self,graph):
+    def get_timer(self,graph): c
         end=False
         p = re.compile(r"\d*\.\d+")
         exec_time=0
@@ -90,7 +90,7 @@ class server:
 
 def main():
     s=server()
-    for i in range(10,11):
+    for i in range(2,21):
         file="data/"+str(i*100)
         mkdir(file)
         executions= []

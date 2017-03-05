@@ -21,10 +21,10 @@ $(TARGET_C) : preparec $(OBJS_C)
 c_no_lib:preparec
 	gcc -Dunique -g -o ../build/prince_c prince.c lib/ini.c parser.c oonf.c olsr.c socket.c ../../graph-parser_c/src/brandes.c ../../graph-parser_c/src/biconnected.c  ../../graph-parser_c/src/graph_parser.c ../../graph-parser_c/src/graph/graph.c ../../graph-parser_c/src/graph/list.c ../../graph-parser_c/src/network_change.c -lm -ldl -ljson-c -pthread
 
-libprince_olsr.so : olsr.o socket.o parser.o
+libprince_olsr.so : preparecpp olsr.o socket.o parser.o
 	$(CXX)  -shared -fPIC -o  $(BPATH)$@  olsr.o socket.o parser.o
 
-libprince_oonf.so : oonf.o socket.o parser.o
+libprince_oonf.so : preparecpp oonf.o socket.o parser.o
 	$(CXX)  -shared -fPIC -o  $(BPATH)$@  oonf.o socket.o parser.o
 
 preparec:

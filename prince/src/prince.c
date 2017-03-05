@@ -74,7 +74,6 @@ main(int argc, char* argv[]){
     struct prince_handler *ph= new_prince_handler(argv[1]);
     if(ph==0)
         return -1;
-    
 #ifndef unique
     ph->bc_degree_map = (map_id_degree_bc *) malloc(sizeof(map_id_degree_bc));
     /*cycle each 'refresh' seconds*/

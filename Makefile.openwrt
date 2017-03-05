@@ -33,7 +33,7 @@ define Package/poprouting/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/output/libprince_oonf.so  $(1)/usr/lib/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/output/prince $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/output/prince_c $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/output/logger $(1)/usr/sbin/logger
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/output/logger $(1)/usr/sbin/
 endef
 
 $(eval $(call BuildPackage,poprouting))
