@@ -62,7 +62,7 @@ class server:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind(('', port))
         self.s.listen(10)
-    def get_timer(self,graph): c
+    def get_timer(self,graph):
         end=False
         p = re.compile(r"\d*\.\d+")
         exec_time=0

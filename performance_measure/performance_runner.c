@@ -18,10 +18,13 @@
  * 
  */
 int main(int argc, char** argv) {
+	printf("1 %d\n",argc);
     if (argc<2){
 	return;
     }
+printf("2 %d\n",argc);
     logger(argv[1],2000);
+printf("3 %d\n",argc);
     return (EXIT_SUCCESS);
 }
 

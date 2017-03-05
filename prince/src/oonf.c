@@ -7,14 +7,14 @@
  * @return pointer to oonf plugin handler
  */
 routing_plugin* new_plugin(char* host, int port, c_graph_parser *gp, int json_type){
-	routing_plugin *o =(routing_plugin*) malloc(sizeof(routing_plugin));
-	o->port=port;
-	o->host=strdup(host);
-	o->gp = gp;
-	o->json_type=json_type;
-        o->recv_buffer=0;
-        o->self_id=0;
-	return o;
+    routing_plugin *o =(routing_plugin*) malloc(sizeof(routing_plugin));
+    o->port=port;
+    o->host=strdup(host);
+    o->gp = gp;
+    o->json_type=json_type;
+    o->recv_buffer=0;
+    o->self_id=0;
+    return o;
 }
 
 /**
@@ -24,39 +24,39 @@ routing_plugin* new_plugin(char* host, int port, c_graph_parser *gp, int json_ty
  */
 int get_topology(routing_plugin *o)
 {
-	int sd, sent;
-	if((sd = _create_socket(o->host, o->port))==0){
-		printf("Cannot connect to %s:%d", o->host, o->port);
-		return 0;
-	}
-	char *req = "/netjsoninfo filter graph ipv6_0/quit\n";
-	if( (sent = send(sd,req,strlen(req),MSG_NOSIGNAL))==-1){
-		printf("Cannot send to %s:%d", o->host, o->port);
-		close(sd);
-		return 0;
-	}
-	if(o->recv_buffer!=0){
-            free(o->recv_buffer);
-	    o->recv_buffer=0;
-    	}
-	if(!_telnet_receive(sd, &(o->recv_buffer))){
-		printf("cannot receive \n");
-		close(sd);
-		return 0;
-	}
-	struct topology *t = parse_netjson(o->recv_buffer);
-	if(!t){
-		printf("can't parse netjson\n %s \n", o->recv_buffer);
-		close(sd);
-		return 0;
-	}
-	graph_parser_parse_simplegraph(o->gp, t);
-        if(o->self_id!=0)
-            free(o->self_id);
-	o->self_id=strdup(t-> self_id);
-	close(sd);
-	destroy_topo(t);
-	return 1;
+    int sd, sent;
+    if((sd = _create_socket(o->host, o->port))==0){
+        printf("Cannot connect to %s:%d", o->host, o->port);
+        return 0;
+    }
+    char *req = "/netjsoninfo filter graph ipv6_0/quit\n";
+    if( (sent = send(sd,req,strlen(req),MSG_NOSIGNAL))==-1){
+        printf("Cannot send to %s:%d", o->host, o->port);
+        close(sd);
+        return 0;
+    }
+    if(!_telnet_receive(sd, &(o->recv_buffer))){
+        printf("cannot receive \n");
+        close(sd);
+        return 0;
+    }
+    if(o->recv_buffer!=0){
+        free(o->recv_buffer);
+        o->recv_buffer=0;
+    }
+    struct topology *t = parse_netjson(o->recv_buffer);
+    if(!t){
+        printf("can't parse netjson\n %s \n", o->recv_buffer);
+        close(sd);
+        return 0;
+    }
+    graph_parser_parse_simplegraph(o->gp, t);
+    if(o->self_id!=0)
+        free(o->self_id);
+    o->self_id=strdup(t-> self_id);
+    close(sd);
+    destroy_topo(t);
+    return 1;
 }
 
 
@@ -67,13 +67,13 @@ int get_topology(routing_plugin *o)
  */
 int push_timers(routing_plugin *o, struct timers t)
 {
-	int sd =_create_socket(o->host, o->port);
-	char cmd[111];
-	sprintf(cmd, "/config set olsrv2.tc_interval=%4.2f/config set interface.hello_interval=%4.2f/config commit/quit/exec=%4.6f", t.tc_timer, t.h_timer, t.exec_time);
-	write(sd, cmd, strlen(cmd));
-	printf("Pushed Timers %4.2f  %4.2f\n", t.tc_timer, t.h_timer);
-	close(sd);
-	return 1;
+    int sd =_create_socket(o->host, o->port);
+    char cmd[111];
+    sprintf(cmd, "/config set olsrv2.tc_interval=%4.2f/config set interface.hello_interval=%4.2f/config commit/quit/exec=%4.6f", t.tc_timer, t.h_timer, t.exec_time);
+    write(sd, cmd, strlen(cmd));
+    printf("Pushed Timers %4.2f  %4.2f\n", t.tc_timer, t.h_timer);
+    close(sd);
+    return 1;
 }
 
 /**
@@ -82,10 +82,10 @@ int push_timers(routing_plugin *o, struct timers t)
  */
 void delete_plugin(routing_plugin* o)
 {
-	delete_graph_parser(o->gp);
-	free(o->host);
-        if(o->recv_buffer!=0)
-            free(o->recv_buffer);
-	free(o->self_id);
-	free(o);
+    delete_graph_parser(o->gp);
+    free(o->host);
+    if(o->recv_buffer!=0)
+        free(o->recv_buffer);
+    free(o->self_id);
+    free(o);
 }
