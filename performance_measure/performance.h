@@ -25,7 +25,7 @@ extern "C" {
 #include <stddef.h>
     
     struct data_last{
-        long time_micros;
+        long time_millis;
         unsigned long long int last_cpu_ticks;
     };
     

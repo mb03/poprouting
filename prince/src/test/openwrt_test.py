@@ -38,10 +38,12 @@ def composeNetJson(graph):
     Netjson['version'] = 'poprouting custom'
     Netjson['revision'] = '0.11.3'
     Netjson['metric'] = 'ff_dat_metric'
-    Netjson['router_id'] = '0'
     Netjson['nodes'] = []
+    d=None
     for node in graph.nodes():
         n = {}
+        if not d:
+            d=str(node)
         n['id'] = str(node)
         Netjson['nodes'].append(n)
     Netjson['links'] = []
@@ -54,6 +56,7 @@ def composeNetJson(graph):
         else:
             e['cost'] = 1.0
         Netjson['links'].append(e)
+        Netjson['router_id'] = d#enforce the presence
     return Netjson
 
 
@@ -85,10 +88,23 @@ class server:
          self.s.close()
 
 
-
+def real_networks():
+    s=server()
+    for ds in ["FFWien","FFGraz","ninux"]:
+        file="data/"+ds
+        mkdir(file)
+        executions= []
+        for j in range(0,100):
+            if j % 10 == 1 and executions:
+                print ds,j,executions[-1]
+            g=nx.read_weighted_edgelist(file+"/"+str(j))
+            executions.append(s.get_timer(g))
+        print(ds,mean(executions),var(executions))
 
 
 def main():
+    real_networks()
+    return
     s=server()
     for i in range(2,21):
         file="data/"+str(i*100)
