@@ -31,12 +31,9 @@ extern "C" {
     
     char logger(char * pid, int interval);
     void set_last_val(struct  data_last * dl);
-    int get_percentage(struct  data_last * dl);
+    int get_percentage(struct  data_last * dl, double * time_s);
     void log_cpu_info(double percentage,char *filename,int nodenum);
     void log_start(char *filename);
-    
-    
-    
     
 #ifdef __cplusplus
 }

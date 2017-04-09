@@ -152,7 +152,7 @@ char logger(char * pid, int interval){
 }
 
 void set_last_val(struct  data_last * dl){
-    init_log_cpu_info("self");
+    init_log_cpu_info((char*)"self");
     unsigned long long int utime=0,stime=0;
     get_cpu_info(cpu_file,&utime,&stime);
     dl->time_millis=current_time_millis();
@@ -161,16 +161,16 @@ void set_last_val(struct  data_last * dl){
         frequency=sysconf(_SC_CLK_TCK);;
 }
 
-int get_percentage(struct  data_last * dl){
+int get_percentage(struct  data_last * dl,double * time_s){
     unsigned long long int utime=0,stime=0;
     get_cpu_info(cpu_file,&utime,&stime);
     long time=current_time_millis();
     long ticks=utime+stime-dl->last_cpu_ticks;
     double time_exe=((double)(time-dl->time_millis))/1000;
-    //printf("frequency %f %ld\n",time_exe,ticks);
+    (*time_s)=(double)(((double)((utime+stime)-dl->last_cpu_ticks))/(double)frequency);
+    printf("frequency %f\n",*time_s);
     dl->time_millis=time;
     dl->last_cpu_ticks=utime+stime;
     int percent=(100*ticks/(time_exe*frequency));
     return percent>100?100:percent;
-    
 }

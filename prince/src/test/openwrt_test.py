@@ -103,14 +103,14 @@ def real_networks():
 
 
 def main():
-    real_networks()
-    return
+    #real_networks()
+    #return
     s=server()
     for i in range(2,21):
         file="data/"+str(i*100)
         mkdir(file)
         executions= []
-        for j in range(10):
+        for j in range(1):
             #print(str(round(float(((i-2)*10+j+1))/1.9,2))+"%")
             g=nx.read_weighted_edgelist(file+"/"+str(j))
             executions.append(s.get_timer(g))
