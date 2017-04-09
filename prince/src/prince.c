@@ -95,11 +95,15 @@ main(int argc, char* argv[]){
         if(ph->rp->self_id)
             ph->self_id = strdup(ph->rp->self_id);
         clock_t start = clock();
+	clock_t t = clock();
         graph_parser_calculate_bc(ph->gp);
+	t = clock() - t;
+	double time=((double)t)/CLOCKS_PER_SEC;
         clock_t end = clock();
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
         int nodes_num_to_log=ph->bc_degree_map->size;
-        ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
+	ph->opt_t.exec_time=time;
+        //ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
         printf("Calculation time: %fs\n", ph->opt_t.exec_time);
         if (!compute_timers(ph)){
             delete_prince_handler(ph);
@@ -109,7 +113,7 @@ main(int argc, char* argv[]){
 	double exe1,exe2;
         log_cpu_info(get_percentage(&dl,&exe1),(char*)"cpp_cpu_tot.txt",nodes_num_to_log);
         log_cpu_info(get_percentage(&dl1,&exe2),(char*)"cpp_cpu_algo.txt",nodes_num_to_log);
-	ph->opt_t.exec_time=exe2;
+	//ph->opt_t.exec_time=exe2;
         if (!push_timers_p(ph->rp, ph->opt_t)){
             delete_prince_handler(ph);
             continue;
@@ -142,14 +146,18 @@ main(int argc, char* argv[]){
             ph->self_id = strdup(ph->rp->self_id);
         }
         clock_t start = clock();
+	clock_t t = clock();
         graph_parser_calculate_bc(ph->gp);
+	t = clock() - t;
+	double time=((double)t)/CLOCKS_PER_SEC;
+	ph->opt_t.exec_time=time;
         clock_t end = clock();
         ph->bc_degree_map = (map_id_degree_bc *) malloc(sizeof(map_id_degree_bc));
         ph->bc_degree_map->size=gp_p->g.nodes.size;
         ph->bc_degree_map->map=0;
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
         int nodes_num_to_log=ph->bc_degree_map->size;
-        ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
+        //ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
         printf("\nCalculation time: %fs\n", ph->opt_t.exec_time);
         if (!compute_timers(ph)){
             delete_prince_handler(ph);
@@ -159,7 +167,7 @@ main(int argc, char* argv[]){
 	double exe1,exe2;
         log_cpu_info(get_percentage(&dl,&exe1),(char*)"cpp_cpu_tot.txt",nodes_num_to_log);
         log_cpu_info(get_percentage(&dl1,&exe2),(char*)"cpp_cpu_algo.txt",nodes_num_to_log);
-	ph->opt_t.exec_time=exe2;
+	//ph->opt_t.exec_time=exe2;
         if (!push_timers_p(ph->rp, ph->opt_t)){
             delete_prince_handler(ph);
             continue;
