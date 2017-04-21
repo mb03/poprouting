@@ -168,7 +168,6 @@ int get_percentage(struct  data_last * dl,double * time_s){
     long ticks=utime+stime-dl->last_cpu_ticks;
     double time_exe=((double)(time-dl->time_millis))/1000;
     (*time_s)=(double)(((double)((utime+stime)-dl->last_cpu_ticks))/(double)frequency);
-    printf("frequency %f\n",*time_s);
     dl->time_millis=time;
     dl->last_cpu_ticks=utime+stime;
     int percent=(100*ticks/(time_exe*frequency));

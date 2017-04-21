@@ -61,7 +61,7 @@ def composeNetJson(graph):
 
 
 class server:
-    def __init__(self,port=8080):
+    def __init__(self,port=2020):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind(('', port))
         self.s.listen(10)
@@ -69,6 +69,7 @@ class server:
         end=False
         p = re.compile(r"\d*\.\d+")
         exec_time=0
+        algo_time=0
         while not end:
             #wait to accept a connection - blocking call
             conn, addr = self.s.accept()
@@ -81,9 +82,10 @@ class server:
                 toks = p.findall(data)
                 if toks:
                     exec_time = float(toks[2])
+                    algo_time = float(toks[3])
                     conn.close()
                     end=True
-        return exec_time
+        return exec_time,algo_time
     def __exit__(self):
          self.s.close()
 
@@ -93,13 +95,17 @@ def real_networks():
     for ds in ["FFWien","FFGraz","ninux"]:
         file="data/"+ds
         mkdir(file)
-        executions= []
+        overall_executions= []
+        algo_executions= []
         for j in range(0,100):
-            if j % 10 == 1 and executions:
-                print ds,j,executions[-1]
+            if j % 10 == 1 and overall_executions:
+                print ds,j,overall_executions[-1]
             g=nx.read_weighted_edgelist(file+"/"+str(j))
-            executions.append(s.get_timer(g))
-        print(ds,mean(executions),var(executions))
+            overall,algo=s.get_timer(g)
+            overall_executions.append(overall)
+            algo_executions.append(algo)
+        print(ds,mean(overall_executions),var(overall_executions),
+              mean(algo_executions),var(algo_executions))
 
 
 def main():
@@ -109,12 +115,16 @@ def main():
     for i in range(2,21):
         file="data/"+str(i*100)
         mkdir(file)
-        executions= []
-        for j in range(1):
+        overall_executions= []
+        algo_executions= []
+        for j in range(10):
             #print(str(round(float(((i-2)*10+j+1))/1.9,2))+"%")
             g=nx.read_weighted_edgelist(file+"/"+str(j))
-            executions.append(s.get_timer(g))
-        print(i*100,mean(executions),var(executions))
+            overall,algo=s.get_timer(g)
+            overall_executions.append(overall)
+            algo_executions.append(algo)
+        print(i*100,mean(overall_executions),var(overall_executions),
+              mean(algo_executions),var(algo_executions))
 
 if __name__ == "__main__":
     #print(datetime.datetime.now())

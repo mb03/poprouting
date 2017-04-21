@@ -103,6 +103,7 @@ main(int argc, char* argv[]){
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
         int nodes_num_to_log=ph->bc_degree_map->size;
 	ph->opt_t.exec_time=time;
+	ph->opt_t.algo_time=0;
         //ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
         printf("Calculation time: %fs\n", ph->opt_t.exec_time);
         if (!compute_timers(ph)){
@@ -133,6 +134,7 @@ main(int argc, char* argv[]){
         set_last_val(&dl);
         log_start((char*)"c_cpu_tot.txt");
         sleep(ph->refresh);
+	clock_t overall_start = clock();
         if(!get_topology_p(ph->rp)){
             printf("Error getting topology");
             continue;
@@ -149,8 +151,7 @@ main(int argc, char* argv[]){
 	clock_t t = clock();
         graph_parser_calculate_bc(ph->gp);
 	t = clock() - t;
-	double time=((double)t)/CLOCKS_PER_SEC;
-	ph->opt_t.exec_time=time;
+	ph->opt_t.algo_time=((double)t)/CLOCKS_PER_SEC;
         clock_t end = clock();
         ph->bc_degree_map = (map_id_degree_bc *) malloc(sizeof(map_id_degree_bc));
         ph->bc_degree_map->size=gp_p->g.nodes.size;
@@ -158,8 +159,10 @@ main(int argc, char* argv[]){
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
         int nodes_num_to_log=ph->bc_degree_map->size;
         //ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
+        overall_start= clock() - overall_start;
+	ph->opt_t.exec_time=((double)overall_start)/CLOCKS_PER_SEC;
         printf("\nCalculation time: %fs\n", ph->opt_t.exec_time);
-        if (!compute_timers(ph)){
+	if (!compute_timers(ph)){
             delete_prince_handler(ph);
             continue;
         }
