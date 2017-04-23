@@ -65,7 +65,7 @@ class server:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind(('', port))
         self.s.listen(10)
-    def get_timer(self,graph):
+    def get_timer(self,graph,json_s=None):
         end=False
         p = re.compile(r"\d*\.\d+")
         exec_time=0
@@ -75,7 +75,10 @@ class server:
             conn, addr = self.s.accept()
             data=conn.recv(1024)
             if data.strip() == "/netjsoninfo filter graph ipv6_0/quit":
-                json_netjson = json.dumps(composeNetJson(graph))
+                if json_s is not None:
+                    json_netjson=json_s
+                else:
+                    json_netjson = json.dumps(composeNetJson(graph))
                 conn.send(json_netjson)
                 conn.close()
             elif data:
@@ -94,7 +97,6 @@ def real_networks():
     s=server()
     for ds in ["FFWien","FFGraz","ninux"]:
         file="data/"+ds
-        mkdir(file)
         overall_executions= []
         algo_executions= []
         for j in range(0,100):
@@ -107,10 +109,24 @@ def real_networks():
         print(ds,mean(overall_executions),var(overall_executions),
               mean(algo_executions),var(algo_executions))
 
+def real_networks_newtests():
+    s=server()
+    for ds in ["wien","graz"]:
+        file="new_tests/"+ds+".json"
+        overall_executions= []
+        algo_executions= []
+        for j in range(5):
+            with open(file,"r") as myf:
+                json_s=myf.read().replace("\n","");
+            overall,algo=s.get_timer(None,json_s=json_s)
+            overall_executions.append(overall)
+            algo_executions.append(algo)
+        print(ds,mean(overall_executions),var(overall_executions),
+              mean(algo_executions),var(algo_executions))
 
 def main():
-    #real_networks()
-    #return
+    real_networks_newtests()
+    return
     s=server()
     for i in range(2,21):
         file="data/"+str(i*100)

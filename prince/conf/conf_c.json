@@ -1,12 +1,12 @@
 {
 	"proto": {
 		"protocol": "oonf",
-		"host": "127.0.0.1",
-		"port": 8081 ,
+		"host": "192.168.1.100",
+		"port": 2020 ,
 		"refresh": 1
 	},
 	"graph-parser": {
-		"heuristic": 1,
+		"heuristic": 0,
 		"weights": 1,
 		"recursive": 0,
 		"stop_unchanged": 0,
