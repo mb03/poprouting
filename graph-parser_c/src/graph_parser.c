@@ -53,7 +53,7 @@ void graph_parser_calculate_bc(c_graph_parser* v){
     if(gp->heuristic_b&&gp->g.nodes.size>80){
         gp->bc=(double*)betwenness_heuristic(&(gp->g),recursive);
     }else{
-        gp->bc=betweeness_brandes(&(gp->g),true,0);
+        gp->bc=betweeness_brandes(&(gp->g),true,0);//,0);
     }
 }
 /**

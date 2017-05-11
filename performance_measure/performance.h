@@ -34,6 +34,8 @@ extern "C" {
     int get_percentage(struct  data_last * dl, double * time_s);
     void log_cpu_info(double percentage,char *filename,int nodenum);
     void log_start(char *filename);
+    void logs(char *filename,char * content);
+
     
 #ifdef __cplusplus
 }

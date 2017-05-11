@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
             printf(",");
         printf("\n");
     }
-    printf("}");
+    printf("}\n");
     delete_graph_parser(cgp);
     return (EXIT_SUCCESS);
 }

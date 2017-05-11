@@ -139,7 +139,7 @@ main(int argc, char* argv[]){
             printf("Error getting topology");
             continue;
         }
-        log_start((char*)"c_cpu_algo.txt");
+        //log_start((char*)"c_cpu_algo.txt");
         struct  data_last dl1;
         set_last_val(&dl1);
         if(ph->rp->self_id){
@@ -168,8 +168,8 @@ main(int argc, char* argv[]){
         }
         printf("Id of the node we are computing is: %s\n", ph->self_id);
 	double exe1,exe2;
-        log_cpu_info(get_percentage(&dl,&exe1),(char*)"cpp_cpu_tot.txt",nodes_num_to_log);
-        log_cpu_info(get_percentage(&dl1,&exe2),(char*)"cpp_cpu_algo.txt",nodes_num_to_log);
+        log_cpu_info(get_percentage(&dl,&exe1),(char*)"c_cpu_tot.txt",nodes_num_to_log);
+        //log_cpu_info(get_percentage(&dl1,&exe2),(char*)"c_cpu_algo.txt",nodes_num_to_log);
 	//ph->opt_t.exec_time=exe2;
         if (!push_timers_p(ph->rp, ph->opt_t)){
             delete_prince_handler(ph);

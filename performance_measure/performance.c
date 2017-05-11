@@ -27,9 +27,30 @@ int parse_line(char* line){
     return i;
 }
 
+void get_memory_info_map(char * c){
+
+  FILE *fp;
+  char path[1035];
+
+  /* Open the command for reading. */
+  fp = popen(c, "r");
+  if (fp == NULL) {
+    printf("Failed to run command\n" );
+    exit(1);
+  }
+
+  /* Read the output a line at a time - output it. */
+  while (fgets(path, sizeof(path)-1, fp) != NULL) {
+    printf("%s", path);
+  }
+
+  /* close */
+  pclose(fp);
+
+}
+
 void get_memory_info(char * c, int *real, int *virtual_s){ 
     FILE* file = fopen(c, "r");
-    int result = -1;
     char line[128];
     int i=0;
     while (fgets(line, 128, file) != NULL){
@@ -140,12 +161,34 @@ void log_start(char *filename){
     
 }
 
+void logs(char *filename,char * content){
+    if( access( filename, F_OK ) == -1 ) {
+        FILE *f = fopen(filename, "w+");
+        fprintf(f, "time\t\t\tnodenum\tcpu\n");
+        fclose(f);
+    }
+    FILE *f = fopen(filename, "a");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    fprintf(f, "%lu\t%s\n",current_time_millis(),content);
+    fclose(f);
+    
+}
+
 char logger(char * pid, int interval){
     char status[80];
     strcpy(status, "/proc/");
     strcat(status, pid);
     strcat(status, "/status");
+    char status2[80];
+    strcpy(status2, "./mem_usage ");
+    strcat(status2, pid);
     while(1){
+    	get_memory_info_map(status2);
         log_memory_info(status);
         usleep(interval);
     }

@@ -34,7 +34,8 @@ install:
 	cp output/prince_c /usr/bin/
 	cp output/prince /usr/bin
 logger:
-	$(CC) performance_measure/performance_runner.c performance_measure/performance.c -o output/prince_logger
+	cp performance_measure/read_mem.py output/
+	#$(CC) performance_measure/performance_runner.c performance_measure/performance.c -o output/prince_logger
 uninstall:
 	rm -f /usr/lib/libgraphparser.so
 	rm -f /usr/lib/libprince_oonf.so

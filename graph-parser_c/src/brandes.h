@@ -11,6 +11,7 @@
 
 #include <pthread.h>
 #include "biconnected.h"
+#include "../../performance_measure/performance.h"//TODO:remove
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +26,7 @@ extern "C" {
  * http://www.algo.uni-konstanz.de/publications/b-fabc-01.pdf
  * http://algo.uni-konstanz.de/publications/b-vspbc-08.pdf
  */
-double * betweeness_brandes(struct graph * g, bool endpoints,int ** traffic_matrix);
+double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_point_val);//,int ** traffic_matrix);
 /**
  * This is the algorithm described in the linked paper.
  * It reaches the exact results of the previous one, but it is implemented
