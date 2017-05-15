@@ -59,8 +59,10 @@ char* read_file_content(char *filename)
 
 
 int main(int argc, char** argv) {
-    if(argc==1)
+    if(argc==1){
+        printf("I need to know if i have to use heuristic. Exiting.\n");
         return 0;
+    }
     int heuristic=atoi(argv[1]);
     //to remove in case of different test
     multithread=false;
@@ -75,8 +77,8 @@ int main(int argc, char** argv) {
     graph_parser_parse_simplegraph(cgp,topo);
     graph_parser_calculate_bc(cgp);
     map_id_degree_bc * bc_degree_map = (map_id_degree_bc *) malloc(sizeof(map_id_degree_bc));
-    graph_parser_compose_degree_bc_map(cgp,bc_degree_map);
-
+    graph_parse_compose_degree_bc_map(cgp,bc_degree_map);
+    
     int i;
     // printf("[\n");
     printf("{\n");
@@ -93,6 +95,3 @@ int main(int argc, char** argv) {
     delete_graph_parser(cgp);
     return (EXIT_SUCCESS);
 }
-/*
- * 
- */

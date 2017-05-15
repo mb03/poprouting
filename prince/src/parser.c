@@ -70,11 +70,12 @@ struct node* find_node(struct topology *topo,const char *id)
 */
 int add_neigh(struct topology *topo, const char *source, const char *id, const double weight)
 {
+
 	struct neighbor *temp;
 	struct node* n;
-	if((n=find_node(topo, source))==0)
-	return 0;
-
+	if((n=find_node(topo, source))==0){
+            return 0;
+        }
 	temp=n->neighbor_list;
 	n->neighbor_list=(struct neighbor*)malloc(sizeof(struct neighbor));
 	if((n->neighbor_list->id=find_node(topo, id))==0)
@@ -139,6 +140,7 @@ struct topology * parse_netjson(char* buffer)
 	json_object *topo = json_tokener_parse(buffer);
 	if(!topo) return 0;
 	json_object_object_foreach(topo, key, val) {
+            //printf("key %s\n",key);
 		if(strcmp(key, "protocol")==0)
 		c_topo->protocol=strdup(json_object_get_string(val));
 		if(strcmp(key,"router_id")==0){
@@ -179,7 +181,7 @@ struct topology * parse_netjson(char* buffer)
 						cost=json_object_get_double(val);
 					}
 					if(source && target && cost){
-						/*printf("   %s %s %f\n", source, target, cost);*/
+						//printf("%s %s %f\n", source, target, cost);
 						if(!add_neigh(c_topo, source, target, cost)){
 							printf("error\n");
 							return 0;
