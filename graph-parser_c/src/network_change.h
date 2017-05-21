@@ -10,7 +10,6 @@
 #include "brandes.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

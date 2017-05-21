@@ -33,10 +33,19 @@ struct graph * read_graph_from_file(char * source_file){
     return g;
 }
 
+void write_to_file(const char *filepath, const char *data)
+{
+    FILE *fp = fopen(filepath, "w+");
+    if (fp != NULL)
+    {
+        fputs(data, fp);
+        fclose(fp);
+    }
+}
+
 int run(int argc, char** argv) {
      if(argc<3){
-        printf("Usage: %%d %%s (%%d).\nUse heuristic | Id of node | Use multithreading(optional, default=0) \n");
-        return 0;
+        return -1;
     }
     bool heuristic=atoi(argv[1])==1;
     char * id_node=argv[2];
@@ -61,10 +70,22 @@ int run(int argc, char** argv) {
         }
     }
     if(centrality<0){
-        printf("Node id not found. %%s not matching. (string)\n");
+        write_to_file("output.txt","Node id not found. %%s not matching. (string)\n");
         
     }else{
-        printf("%f\n",centrality);
+           FILE *fp;
+	    fp = fopen("output.txt", "w+");
+	    if (fp == NULL) {
+		printf("I couldn't open results.dat for writing.\n");
+		exit(0);
+	    }
+	    struct node_list * nl;
+	    int i=0;
+	    for(nl=g->nodes.head;nl!=0;nl=nl->next){
+		struct node_graph* ng=( struct node_graph*)nl->content;
+		fprintf(fp, "%f,%s\n",(float) bc[ng->node_graph_id], ng->name );
+	    }
+	    fclose(fp);
     }
     return (EXIT_SUCCESS);
 }

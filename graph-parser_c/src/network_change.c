@@ -164,7 +164,8 @@ void compute_mean_number(struct list * biconnected_components_subgraph,
         for(;nl2!=0;nl2= nl2->next){
             struct connected_component * cc=
             ( struct connected_component *)nl2->content;
-            std+=pow((((float)cc->g.nodes.size)-mean),2);
+	    float std_tmp=(((float)cc->g.nodes.size)-mean);
+            std+=std_tmp*std_tmp;
         }
     }
     std/=biconnected_comp_count;

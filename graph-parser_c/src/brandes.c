@@ -541,45 +541,6 @@ void compute_heuristic_wo_scale(struct graph * g,
     
     struct node_list * ccs_iterator;
     int bcc_num=connected_components->size;
-    if(multithread && bcc_num>1){
-        int i=0;
-        struct multithread_compute_traffic_matrix_and_centrality_struct * args=(struct multithread_compute_traffic_matrix_and_centrality_struct *)malloc(sizeof(struct multithread_compute_traffic_matrix_and_centrality_struct )*bcc_num);
-        for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
-            struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
-            args[i].cc=cc;
-            args[i].is_articulation_point=is_articulation_point;
-            args[i].node_num=&node_num;
-            args[i].ret_val=0;
-            i++;
-        }
-        for( i=0;i<bcc_num;i++){//start threads for bigger components
-	    if(args[i].cc->g.nodes.size>2){
-            	pthread_create(&args[i].t, NULL, &run_brandes_heu, (void *)(args+i));
-	    }
-	}
-        for( i=0;i<bcc_num;i++){//handle locally all leaves
-            if(args[i].cc->g.nodes.size<=2){
-                run_brandes_heu(args+i);
-                int j;
-                for(j=0;j<args[i].cc->g.nodes.size;j++){
-                    bc[args[i].cc->mapping[j]] += args[i].ret_val[j];
-                }
-                free(args[i].ret_val);
-            }
-        }
-        for( i=0;i<bcc_num;i++){//join threads after local work is done
-            if(args[i].cc->g.nodes.size>2){
-                pthread_join(args[i].t, NULL);
-                int j;
-                for(j=0;j<args[i].cc->g.nodes.size;j++){
-                    bc[args[i].cc->mapping[j]] += args[i].ret_val[j];
-                }
-                free(args[i].ret_val);
-            }
-            
-        }
-        free(args);
-    }else{
         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
             struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
             double * partial=compute_traffic_matrix_and_centrality( cc, node_num,is_articulation_point);
@@ -589,7 +550,7 @@ void compute_heuristic_wo_scale(struct graph * g,
             }
             free(partial);
         }
-    }
+    
     while(!is_empty_list(tree_edges)){
         struct cc_node_edge * cne=( struct cc_node_edge *)dequeue_list(tree_edges);
         free(cne);
@@ -720,29 +681,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     
     int connected_component_index=0;
     int cc_num=connected_components_subgraphs->size;
-    if(multithread && cc_num>1){
-        i=0;
-        struct multithread_subgraph_struct * args=(struct multithread_subgraph_struct *)malloc(sizeof(struct multithread_subgraph_struct )*cc_num);
-        struct node_list * subgraph_iterator=connected_components_subgraphs->head;
-        for(;subgraph_iterator!=0;subgraph_iterator=subgraph_iterator->next){
-            struct sub_graph * sg=(struct sub_graph *)subgraph_iterator->content;
-            args[i].g=g;
-            args[i].ccs=&sg->connected_components;
-            args[i].art_point=is_articulation_point;
-            args[i].bc=ret_val;
-            args[i].indexes=connected_component_indexes;
-            args[i].size=&sg->size;
-            args[i].cc_index=i;
-            i++;
-        }
-        for( i=0;i<cc_num;i++)
-            pthread_create(&args[i].t, NULL, &run_subgraph, (void *)(args+i));
-        
-        for( i=0;i<cc_num;i++){
-            pthread_join(args[i].t, NULL);
-        }
-        free(args);
-    }else{
         // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
         if(cc_num>1||use_heu_on_single_biconnected){
             struct node_list * subgraph_iterator=connected_components_subgraphs->head;
@@ -760,7 +698,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
             free(ret_val);
             return betweeness_brandes(g,true,0);
         }
-    }
     
     if(node_num>2){
         double scale=1/(((double)(node_num-1))*((double)(node_num-2)));

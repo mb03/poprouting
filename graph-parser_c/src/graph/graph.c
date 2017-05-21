@@ -132,27 +132,6 @@ void add_edge_graph_return_node_indexes(struct graph * g, const char * name_from
     
 }
 
-/**
- * Helper function. Given a graph, it prints it as a list of nodes and adjacency
- * list.
- * 
- * @param g A graph
- */
-void print_graph(struct graph * g){
-    struct node_list * nq=g->nodes.head;
-    while(nq!=0){
-        struct node_graph * ng=(struct node_graph*)nq->content;
-        struct node_list * nqi=ng->neighbours.head;
-        printf("%s (%d) [",ng->name,ng->node_graph_id);
-        while(nqi!=0){
-            struct edge_graph * eg=(struct edge_graph*)nqi->content;
-            printf(" (%s , %f) ",eg->to->name,eg->value);
-            nqi=nqi->next;
-        } 
-        printf("]\n");
-        nq=nq->next;
-    }
-}
 
 /**
  * Node initializer. 

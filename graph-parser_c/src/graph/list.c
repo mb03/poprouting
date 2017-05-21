@@ -120,21 +120,6 @@ void * pop_list(struct list * q){
 }
 
 /**
- * Helper function that print list pointers
- * 
- * @param q A list
- */
-void print_list(struct list * q){
-    struct node_list * n=q->head;
-    printf("[");
-    while(n!=0){
-        printf("%p ",n);
-        n=n->next;
-    }
-    printf("]\n");
-}
-
-/**
  * Given a list, it empties it and reset the list as if it is empty
  * 
  * @param q A list we want to reuse or free its memory
@@ -331,20 +316,6 @@ void * dequeue_priority_queue(struct priority_queue * q){
     return ret_val;
 }
 
-/**
- * Helper function that print priority queue pointers
- * 
- * @param q A priority queue
- */
-void print_priority_queue(struct priority_queue * q){
-    struct node_priority_queue * n=q->head;
-    printf("[");
-    while(n!=0){
-        printf("%f ",n->value);
-        n=n->next;
-    } 
-    printf("]\n");
-}
 
 /**
  * It returns whether a priority queue is empty or not
