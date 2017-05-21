@@ -16,6 +16,7 @@
 
 //parameter initialization
 bool multithread=false;
+bool recursive=true;
 bool stop_computing_if_unchanged=false;
 
 /**
