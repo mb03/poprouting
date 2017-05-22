@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "brandes.h"
 #include "local_exe.h"
-
+#include <time.h>
 extern bool multithread;
 extern bool recursive;
 struct graph * read_graph_from_file(char * source_file){
@@ -33,60 +33,45 @@ struct graph * read_graph_from_file(char * source_file){
     return g;
 }
 
-void write_to_file(const char *filepath, const char *data)
-{
-    FILE *fp = fopen(filepath, "w+");
-    if (fp != NULL)
-    {
-        fputs(data, fp);
-        fclose(fp);
-    }
-}
 
-int run(int argc, char** argv) {
+double run_test(int argc, char** argv) {
      if(argc<3){
         return -1;
     }
     bool heuristic=atoi(argv[1])==1;
-    char * id_node=argv[2];
     multithread=false;
+    if(argc==3){
+	multithread=atoi(argv[2])==1;
+    }
     if(argc==4){
-	multithread=atoi(argv[3])==1;
+	recursive=atoi(argv[3])==1;
     }
     struct graph * g=read_graph_from_file("input.edgelist");
     double * bc;
+    clock_t t = clock();
     if(heuristic){
         bc=(double*)betwenness_heuristic(g,recursive);
     }else{
         bc=betweeness_brandes(g,true,0);
     }
-    struct node_list * nl=g->nodes.head;
-    double centrality=-1;
-    for(;nl!=0;nl=nl->next){
-        struct node_graph * ng=( struct node_graph*)nl->content;
-        if(strcmp(id_node,ng->name)==0){
-            centrality=bc[ng->node_graph_id];
-            break;
-        }
-    }
-    if(centrality<0){
-        write_to_file("output.txt","Node id not found. %%s not matching. (string)\n");
-        
-    }else{
-           FILE *fp;
-	    fp = fopen("output.txt", "w+");
-	    if (fp == NULL) {
-		printf("I couldn't open results.dat for writing.\n");
-		exit(0);
-	    }
-	    struct node_list * nl;
-	    int i=0;
-	    for(nl=g->nodes.head;nl!=0;nl=nl->next){
-		struct node_graph* ng=( struct node_graph*)nl->content;
-		fprintf(fp, "%f,%s\n",(float) bc[ng->node_graph_id], ng->name );
-	    }
-	    fclose(fp);
-    }
-    return (EXIT_SUCCESS);
+    t = clock() - t;
+    return ((double)t)/CLOCKS_PER_SEC;
 }
 
+void run_tests(int argc, char** argv,double* mean, double *var){
+double t=0;
+int i=0;
+double vals[10];
+for(;i<10;i++){
+double tmp=run_test(argc, argv);
+t+=tmp;
+vals[i]=tmp;
+}
+(*mean)=t/10;
+double v=0;
+for(;i<10;i++){
+double tmp=(*mean)-vals[i];
+v+=tmp*tmp;
+}
+(*var)=v/10;
+}

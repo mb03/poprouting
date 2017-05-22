@@ -1,1 +1,1 @@
-int run(int argc, char** argv);
+void run_tests(int argc, char** argv,double* mean, double *var);

@@ -592,6 +592,16 @@ void * run_subgraph(void *arguments){
     compute_heuristic_wo_scale(args->g,args->ccs,args->art_point,args->bc,args->indexes,(*args->size),args->cc_index);
     return 0;
 }
+
+
+
+
+unsigned long  current_time_millis(){
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    return 1000 * tv.tv_sec + tv.tv_usec/1000;
+}
+
 /**
  * Algorithm for heuristic
  * Wrapper for all function above. It returns the correct centrality, it is
@@ -612,12 +622,12 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
         connected_component_indexes[i]=-1;
     }
     struct list* connected_components_subgraphs;
-    if(recursive){
-        connected_components_subgraphs=tarjan_rec_undir(g,is_articulation_point,connected_component_indexes);
-    }else {
-        connected_components_subgraphs=tarjan_iter_undir(g,is_articulation_point,connected_component_indexes);
-    }
-    
+	    if(recursive){
+		connected_components_subgraphs=tarjan_rec_undir(g,is_articulation_point,connected_component_indexes);
+	    }else {
+		connected_components_subgraphs=tarjan_iter_undir(g,is_articulation_point,connected_component_indexes);
+	}
+
     int biconnected_component_num=-1,result_size=-1;
     float standard_deviation_bic=-1;
     float standard_deviation_edge=0;
@@ -717,8 +727,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     free(connected_components_subgraphs);
     free(is_articulation_point);
     free(connected_component_indexes);
-    
-    
+
     return ret_val;
 }
 
