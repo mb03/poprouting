@@ -11,7 +11,6 @@
 #include <math.h>
 #include "brandes.h"
 #include "biconnected.h"
-#include "network_change.h"
 
 
 //parameter initialization
@@ -631,64 +630,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     int biconnected_component_num=-1,result_size=-1;
     float standard_deviation_bic=-1;
     float standard_deviation_edge=0;
-
-    if(stop_computing_if_unchanged){
-        int edge_num=0;
-        struct node_list * nl=g->nodes.head;
-        for(;nl!=0;nl=nl->next){
-            struct node_graph * ng=(struct node_graph *)nl->content;
-            struct node_list * nl2=ng->neighbours.head;
-            for(;nl2!=0;nl2=nl2->next){
-                struct edge_graph * eg=(struct edge_graph *)nl2->content;
-                standard_deviation_edge+=eg->value;
-                edge_num++;
-            }
-        }
-        standard_deviation_edge/=edge_num;
-
-        //if we rely on old values when network
-        //is not changed
-        char ** old_names=0;
-        double *  old_ret_val=is_network_changed(connected_components_subgraphs,g->nodes.size,
-                &biconnected_component_num,&standard_deviation_bic,&standard_deviation_edge,&result_size,&old_names);
-        if(old_ret_val!=0){
-            //free everything is behind
-            while(!is_empty_list(connected_components_subgraphs)){
-                struct list* tmp=( struct list*)dequeue_list(connected_components_subgraphs);
-                while(!is_empty_list(tmp)){
-                    struct connected_component * cc=( struct connected_component *)dequeue_list(tmp);
-                    free_graph(&cc->g);
-                    free(cc->mapping);
-                    free(cc->weights);
-                    free(cc);
-                }
-                
-                free(tmp);
-            }
-            clear_list(connected_components_subgraphs);
-            free(connected_components_subgraphs);
-            free(is_articulation_point);
-            free(connected_component_indexes);
-            if(node_num==result_size){
-                copy_old_values(old_ret_val,ret_val,old_names,result_size,&g->nodes);
-            }
-            free(old_ret_val);
-            if(old_names!=0){
-                for (i=0;i<result_size;i++)
-                    free(old_names[i]);
-                free(old_names);
-            }
-            return ret_val;
-        }
-        if(old_names!=0){
-            for (i=0;i<result_size;i++)
-                free(old_names[i]);
-            free(old_names);
-        }
-    }
-    
-    
-    
+   
     int connected_component_index=0;
     int cc_num=connected_components_subgraphs->size;
         // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
@@ -717,10 +659,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
             
         }
     }
-    //if we are storing values for next computation
-    if(stop_computing_if_unchanged){
-        write_file(biconnected_component_num,standard_deviation_bic,standard_deviation_edge,node_num,ret_val,&g->nodes);
-    }
+
     
     
     clear_list(connected_components_subgraphs);
