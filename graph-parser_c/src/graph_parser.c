@@ -50,7 +50,7 @@ void graph_parser_calculate_bc(c_graph_parser* v){
     struct graph_parser * gp=(struct graph_parser *)v;
     //empirical results show that in smaller graphs the 
     //original algorithm is faster
-    if(gp->heuristic_b&&gp->g.nodes.size>80){
+    if(gp->heuristic_b){
         gp->bc=(double*)betwenness_heuristic(&(gp->g),recursive);
     }else{
         gp->bc=betweeness_brandes(&(gp->g),true,0);
