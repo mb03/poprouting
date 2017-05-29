@@ -717,7 +717,10 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     
     int connected_component_index=0;
     int cc_num=connected_components_subgraphs->size;
+        printf("multithread almost §§§§§§§§§§§§§§§§§§§§§\n");
     if(multithread && cc_num>1){
+        printf("multithread  §§§§§§§§§§§§§§§§§§§§§\\n");
+        exit(-5);
         i=0;
         struct multithread_subgraph_struct * args=(struct multithread_subgraph_struct *)malloc(sizeof(struct multithread_subgraph_struct )*cc_num);
         struct node_list * subgraph_iterator=connected_components_subgraphs->head;
@@ -740,6 +743,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
         }
         free(args);
     }else{
+        exit(-100);
         // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
         if(cc_num>1||use_heu_on_single_biconnected){
             struct node_list * subgraph_iterator=connected_components_subgraphs->head;
