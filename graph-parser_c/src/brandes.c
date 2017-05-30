@@ -16,9 +16,8 @@
 
 //parameter initialization
 bool multithread=false;
-bool recursive=true;
 bool stop_computing_if_unchanged=false;
-
+extern bool recursive;
 /**
  * Whether we are using heuristic in case of single connected component.
  * From test based on 100 cliques of 200 nodes, results are
@@ -57,12 +56,12 @@ const int INFINITY_DIST=INT_MAX;
  * of nodes.
  * @param endpoints Whether we want to include endpoints in final value. It is
  * always used as true when calling this function with next parameter null.
- * @param traffic_matrix It is either 0 or a matrix of integers. In first case,
+ * @param articulation_point_val It is either 0 or an array of integers. In first case,
  * normal brandes algorithm run, in second the heuristic one, considering
  *  intra-component and  inter-component traffic
  * @return An array with betwenness centrality for each node
  */
-double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_point_val){//,int ** traffic_matrix){
+double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_point_val){
     struct priority_queue q;
     struct list S;
     init_priority_queue(&q);
@@ -121,6 +120,7 @@ double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_
             //endpoints included by default
             while(!is_empty_list(&S)){
                 struct node_graph * w=(struct node_graph * )pop_list(&S);
+                // double communication_intensity=(double)traffic_matrix[w->node_graph_id][s->node_graph_id];
                 //new
                 int new_val=0;
                 if(w->node_graph_id!=s->node_graph_id){
@@ -409,40 +409,40 @@ void compute_component_tree_weights(struct graph * g, struct list* tree_edges,in
  */
 double * compute_traffic_matrix_and_centrality(  struct connected_component * cc,int node_num,bool *is_articulation_point){
     int cc_node_num=cc->g.nodes.size;
-    int* art_point_val=(int *)malloc(sizeof(int)*cc_node_num);
     int i;
-    /*
-    int ** comm_matrix=(int **)malloc(sizeof(int*)*cc_node_num);
-    for( i=0;i<cc_node_num;i++){
-        comm_matrix[i]=(int *)malloc(sizeof(int)*cc_node_num);
-    }
-    for(i=0;i<cc_node_num;i++){
-        int j;
-        for(j=0;j<cc_node_num;j++){
-            if(i==j){
-                comm_matrix[i][j]=0;
-            }else{
-                int new_i=cc->mapping[i],new_j=cc->mapping[j];
-                bool is_i_ap=is_articulation_point[new_i];
-                bool is_j_ap=is_articulation_point[new_j];
-                if(!is_i_ap&&!is_j_ap){//0 art point
-                    comm_matrix[i][j]=1;
-                }else if(is_i_ap&&is_j_ap){
-                    // reverse weight for both (rweight= |V| - weight -1)
-                    // it should be (rweight_i+1)*(rweight_j+1)
-                    // the two ones are summed
-                    comm_matrix[i][j]=((node_num-cc->weights[j])*(node_num-cc->weights[i]));
-                }else{//one art point
-                    // same as above
-                    if(is_i_ap){
-                        comm_matrix[i][j]=(node_num-(cc->weights[i]));
-                    }else{
-                        comm_matrix[i][j]=(node_num-(cc->weights[j]));
-                    }
-                }
-            }
-        }
-    }*/
+    int* art_point_val=(int *)malloc(sizeof(int)*cc_node_num);
+    /*int ** comm_matrix=(int **)malloc(sizeof(int*)*cc_node_num);
+     for( i=0;i<cc_node_num;i++){
+     comm_matrix[i]=(int *)malloc(sizeof(int)*cc_node_num);
+     }
+     for(i=0;i<cc_node_num;i++){
+     int j;
+     for(j=0;j<cc_node_num;j++){
+     if(i==j){
+     comm_matrix[i][j]=0;
+     }else{
+     int new_i=cc->mapping[i],new_j=cc->mapping[j];
+     bool is_i_ap=is_articulation_point[new_i];
+     bool is_j_ap=is_articulation_point[new_j];
+     if(!is_i_ap&&!is_j_ap){//0 art point
+     comm_matrix[i][j]=1;
+     }else if(is_i_ap&&is_j_ap){
+     // reverse weight for both (rweight= |V| - weight -1)
+     // it should be (rweight_i+1)*(rweight_j+1)
+     // the two ones are summed
+     comm_matrix[i][j]=((node_num-cc->weights[j])*(node_num-cc->weights[i]));
+     }else{//one art point
+     // same as above
+     if(is_i_ap){
+     comm_matrix[i][j]=(node_num-(cc->weights[i]));
+     }else{
+     comm_matrix[i][j]=(node_num-(cc->weights[j]));
+     }
+     }
+     
+     }
+     }
+     }*/
     for(i=0;i<cc_node_num;i++){
         int new_i=cc->mapping[i];
         bool is_i_ap=is_articulation_point[new_i];
@@ -453,14 +453,14 @@ double * compute_traffic_matrix_and_centrality(  struct connected_component * cc
         }
     }
     //double * ret_val=betweeness_brandes(&(cc->g),true,comm_matrix);
-    double * ret_val=betweeness_brandes(&(cc->g),true,art_point_val);//,comm_matrix);
+    double * ret_val=betweeness_brandes(&(cc->g),true,art_point_val);
     /*for(i=0;i<cc_node_num;i++){
-        free(comm_matrix[i]);
-    }
-    free(comm_matrix);*/
+     free(comm_matrix[i]);
+     }
+     free(comm_matrix);*/
+    free(art_point_val);
     return ret_val;
 }
-
 
 struct multithread_compute_traffic_matrix_and_centrality_struct{
     struct connected_component * cc;
@@ -512,6 +512,7 @@ void compute_heuristic_wo_scale(struct graph * g,
     int node_num=g->nodes.size;
     int i;
     node_num=cc_node_num;
+    
     struct list* tree_edges=connected_components_to_tree(g,connected_components,is_articulation_point);
     compute_component_tree_weights(g,tree_edges,node_num);
     i=0;
@@ -655,6 +656,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     }else {
         connected_components_subgraphs=tarjan_iter_undir(g,is_articulation_point,connected_component_indexes);
     }
+    
     int biconnected_component_num=-1,result_size=-1;
     float standard_deviation_bic=-1;
     float standard_deviation_edge=0;
@@ -717,10 +719,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     
     int connected_component_index=0;
     int cc_num=connected_components_subgraphs->size;
-        printf("multithread almost §§§§§§§§§§§§§§§§§§§§§\n");
     if(multithread && cc_num>1){
-        printf("multithread  §§§§§§§§§§§§§§§§§§§§§\\n");
-        exit(-5);
         i=0;
         struct multithread_subgraph_struct * args=(struct multithread_subgraph_struct *)malloc(sizeof(struct multithread_subgraph_struct )*cc_num);
         struct node_list * subgraph_iterator=connected_components_subgraphs->head;
@@ -743,7 +742,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
         }
         free(args);
     }else{
-        exit(-100);
         // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
         if(cc_num>1||use_heu_on_single_biconnected){
             struct node_list * subgraph_iterator=connected_components_subgraphs->head;
@@ -752,7 +750,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
                 compute_heuristic_wo_scale(g,&(sg->connected_components),
                         is_articulation_point,ret_val,connected_component_indexes,
                         sg->size,connected_component_index++);
-    		
             }
         }else {
             clear_list(connected_components_subgraphs);
@@ -760,7 +757,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
             free(is_articulation_point);
             free(connected_component_indexes);
             free(ret_val);
-            return betweeness_brandes(g,true,0);//,0);
+            return betweeness_brandes(g,true,0);
         }
     }
     
@@ -782,6 +779,7 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     free(connected_components_subgraphs);
     free(is_articulation_point);
     free(connected_component_indexes);
+    
     
     return ret_val;
 }

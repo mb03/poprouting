@@ -114,11 +114,7 @@ def real_networks():
 
 def real_networks_newtests():
     s=server()
-<<<<<<< HEAD
     for ds in ["wien","graz","ninux"]:
-=======
-    for ds in ["wien","graz"]:
->>>>>>> 9de961c4ffbd44f7010d31573769f8771dd1c749
         file="new_tests/"+ds+".json"
         overall_executions= []
         algo_executions= []
@@ -134,20 +130,6 @@ def real_networks_newtests():
 def main():
     real_networks_newtests()
     return
-    s=server()
-    for i in range(2,21):
-        file="data/"+str(i*100)
-        mkdir(file)
-        overall_executions= []
-        algo_executions= []
-        for j in range(10):
-            #print(str(round(float(((i-2)*10+j+1))/1.9,2))+"%")
-            g=nx.read_weighted_edgelist(file+"/"+str(j))
-            overall,algo=s.get_timer(g)
-            overall_executions.append(overall)
-            algo_executions.append(algo)
-        print(i*100,mean(overall_executions),var(overall_executions),
-              mean(algo_executions),var(algo_executions))
 
 if __name__ == "__main__":
     #print(datetime.datetime.now())

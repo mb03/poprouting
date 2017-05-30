@@ -1,6 +1,6 @@
 #include "graph_parser.h"
 
-
+bool recursive=true;
 
 
 /**
