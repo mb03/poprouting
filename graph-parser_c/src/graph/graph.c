@@ -1,6 +1,8 @@
+#include <stdint.h>
+
 #include "graph.h"
 
-void init_node_graph(struct node_graph * n,const char * name, int node_graph_id);
+void init_node_graph(struct node_graph * n,uint8_t name, int node_graph_id);
 void init_edge_graph(struct edge_graph * e);
 void init_edge_graph_params(struct edge_graph * e,struct node_graph * to,double value);
 
@@ -25,7 +27,7 @@ void init_graph(struct graph * g){
  * @param name The name of the node that will be added
  * @return The created and added node
  */
-struct node_graph * add_node_graph(struct graph * g, const char * name){//uniqueness check not performed
+struct node_graph * add_node_graph(struct graph * g, uint8_t name){//uniqueness check not performed
     struct node_graph * n=(struct node_graph*)malloc(sizeof(struct node_graph));
     init_node_graph(n,name,g->nodes.size);
     enqueue_list(&(g->nodes),(void*)n);
@@ -48,22 +50,22 @@ struct node_graph * add_node_graph(struct graph * g, const char * name){//unique
  * @param value The edge weight
  * @param directed Whether the edge is directed or not
  */
-void add_edge_graph(struct graph * g, const char * name_from, const char * name_to, double value, bool directed){
+void add_edge_graph(struct graph * g, uint8_t name_from, uint8_t name_to, double value, bool directed){
     struct node_graph *from=0,*to=0,*current =0;
     struct node_list * n=g->nodes.head;
     while(n!=0 && (from==0 || to==0)){ //if there are no more nodes or we have found both edge ends
         current=(struct node_graph *)n->content;
-        if(from==0 && strcmp(current->name,name_from)==0){
+        if(from==0 && current->name==name_from){
             from=current;
         }
-        if(to==0 && strcmp(current->name,name_to)==0){
+        if(to==0 && current->name==name_to){
             to=current;
         }
         n=n->next;
     }
     if(from==0){
         from=add_node_graph(g,name_from);
-        if(strcmp(name_from,name_to)==0)
+        if(name_from==name_to)
             to=from;
     }     
     if(to==0){
@@ -94,22 +96,22 @@ void add_edge_graph(struct graph * g, const char * name_from, const char * name_
  * @param nodefrom An integer pointer used to return the id of @name_from node
  * @param nodeto An integer pointer used to return the id of @name_to node
  */
-void add_edge_graph_return_node_indexes(struct graph * g, const char * name_from, const char * name_to, double value, bool directed,int  * nodefrom, int * nodeto){
+void add_edge_graph_return_node_indexes(struct graph * g,uint8_t name_from, uint8_t name_to, double value, bool directed,int  * nodefrom, int * nodeto){
     struct node_graph *from=0,*to=0,*current =0;
     struct node_list * n=g->nodes.head;
     while(n!=0 && (from==0 || to==0)){ //if there are no more nodes or we have found both edge ends
         current=(struct node_graph *)n->content;
-        if(from==0 && strcmp(current->name,name_from)==0){
+        if(from==0 && current->name==name_from){
             from=current;
         }
-        if(to==0 && strcmp(current->name,name_to)==0){
+        if(to==0 && current->name==name_to){
             to=current;
         }
         n=n->next;
     }
     if(from==0){
         from=add_node_graph(g,name_from);
-        if(strcmp(name_from,name_to)==0)
+        if(name_from==name_to)
             to=from;
     }     
     if(to==0){
@@ -142,8 +144,8 @@ void add_edge_graph_return_node_indexes(struct graph * g, const char * name_from
  * @param name The name that identifies a node. Must be unique
  * @param node_graph_id The numeric id of the new node.
  */
-void init_node_graph(struct node_graph * n,const char * name,int node_graph_id){
-    n->name=strdup((const char *)name);
+void init_node_graph(struct node_graph * n,uint8_t name,int node_graph_id){
+    n->name=name;
     init_list(&(n->neighbours));
     n->node_graph_id=node_graph_id;
 }
@@ -196,7 +198,6 @@ void free_graph(struct graph * g){
             free(e);
         }
         nq=nq->next;
-        free(ng->name);
         free(ng);
         free(nq_tmp);
     }

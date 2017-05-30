@@ -9,7 +9,6 @@
 #define ALGORITHMS_H
 
 
-#include <pthread.h>
 #include "biconnected.h"
 
 #ifdef __cplusplus

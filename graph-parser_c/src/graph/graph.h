@@ -10,7 +10,7 @@
 
 #include "list.h" 
 #include <stdbool.h>
-#include <string.h>
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20,7 +20,7 @@ extern "C" {
     
     struct node_graph {
         struct list neighbours;
-        char * name;
+        uint8_t name;
         int node_graph_id;
     }; 
     struct edge_graph {
@@ -33,8 +33,8 @@ extern "C" {
     };
     
     void init_graph(struct graph * g);
-    void add_edge_graph(struct graph * g, const char * name_from, const char * name_to, double value, bool directed);
-    void add_edge_graph_return_node_indexes(struct graph * g, const char * name_from, const char * name_to, double value, bool directed,int  * nodefrom, int * nodeto);
+    void add_edge_graph(struct graph * g,  uint8_t name_from,  uint8_t name_to, double value, bool directed);
+    void add_edge_graph_return_node_indexes(struct graph * g,  uint8_t name_from,  uint8_t name_to, double value, bool directed,int  * nodefrom, int * nodeto);
     void free_graph(struct graph * g);
     
 

@@ -14,7 +14,6 @@
 
 
 //parameter initialization
-bool multithread=false;
 bool recursive=true;
 bool stop_computing_if_unchanged=false;
 
@@ -26,20 +25,6 @@ bool stop_computing_if_unchanged=false;
  * so @use_heu_on_single_biconnected is set to true,to improve performance
  */
 bool use_heu_on_single_biconnected=true;
-
-/*
- * Not used !!!
- * used for rounding. approximation to E^(-9)
- * This is not perfectly working, i.e. compared to another language (like python
- * Networkx) some errors will be always present, and will be larger the largest
- * a graph is. So this is an imperfect solution due to different language
- * mathematical approximation.
- */
-float decimal_places=1000000000;
-
-static inline double round_decimal(double d){
-    return roundf(d*decimal_places)/decimal_places;
-}
 
 
 const int INFINITY_DIST=INT_MAX;
@@ -351,7 +336,7 @@ void compute_component_tree_weights(struct graph * g, struct list* tree_edges,in
             struct cc_node_edge * t;
             for(edge_iterator=tree_edges->head;edge_iterator!=0;edge_iterator=edge_iterator->next){
                 struct cc_node_edge * cne_i=(struct cc_node_edge*)edge_iterator->content;
-                if(strcmp(cne_i->to->name,cne->to->name)==0&&(*cne_i->weight)==-1){
+                if((cne_i->to->name==cne->to->name)&&(*cne_i->weight)==-1){
                     count++;
                     t=cne_i;
                     
@@ -367,7 +352,7 @@ void compute_component_tree_weights(struct graph * g, struct list* tree_edges,in
             struct node_list * edge_iterator;
             for(edge_iterator=tree_edges->head;edge_iterator!=0;edge_iterator=edge_iterator->next){
                 struct cc_node_edge * cne_i=(struct cc_node_edge*)edge_iterator->content;
-                if(strcmp(cne_i->to->name,cne->to->name)==0&&(*cne_i->weight)!=-1&&cne_i->from!=cne->from){
+                if((cne_i->to->name==cne->to->name)&&(*cne_i->weight)!=-1&&cne_i->from!=cne->from){
                     size+=(*cne_i->weight);
                 }
             }
@@ -462,28 +447,7 @@ double * compute_traffic_matrix_and_centrality(  struct connected_component * cc
     return ret_val;
 }
 
-struct multithread_compute_traffic_matrix_and_centrality_struct{
-    struct connected_component * cc;
-    int * node_num;
-    bool *is_articulation_point;
-    double * ret_val;
-    pthread_t t;
-};
 
-/**
- * Algorithm for heuristic (not described explicitly in the paper)
- * Helper function to compute brandes centrality concurrently.
- *
- * @param arguments struct wrapper for arguments of
- * compute_traffic_matrix_and_centrality, i.e. connected component, node number,
- * array for betwenness value, reference thread
- * @return nothing, it respects the typing for a pthread thread
- */
-void * run_brandes_heu(void *arguments){
-    struct multithread_compute_traffic_matrix_and_centrality_struct *args = ( struct multithread_compute_traffic_matrix_and_centrality_struct *)arguments;
-    args->ret_val=compute_traffic_matrix_and_centrality(args->cc,*args->node_num,args->is_articulation_point);
-    return 0;
-}
 
 /**
  *  Algorithm for heuristic (not described explicitly in the paper)
@@ -565,41 +529,8 @@ void compute_heuristic_wo_scale(struct graph * g,
     free(connected_components);
 }
 
-struct multithread_subgraph_struct{
-    struct graph * g;
-    struct list * ccs;
-    bool * art_point;
-    double * bc;
-    int *  indexes;
-    int * size;
-    int cc_index;
-    pthread_t t;
-};
-
-/**
- *  Algorithm for heuristic (not described explicitly in the paper)
- *  Helper function that runs brandes heuristic on connected subgraph
- * @param arguments the list of arguments, the original graph, the list of
- * biconnected components of current connected subgraph, the articulation point,
- * the betwenness results array, the list of id that tells to which connected
- * component a node belong, the size of the connected graph, the size of the
- * current subgraph, the index of it and the current thread.
- * @return nothing, it respects the typing for a pthread thread
- */
-void * run_subgraph(void *arguments){
-    struct multithread_subgraph_struct *args = ( struct multithread_subgraph_struct *)arguments;
-    compute_heuristic_wo_scale(args->g,args->ccs,args->art_point,args->bc,args->indexes,(*args->size),args->cc_index);
-    return 0;
-}
 
 
-
-
-unsigned long  current_time_millis(){
-    struct timeval tv;
-    gettimeofday(&tv,NULL);
-    return 1000 * tv.tv_sec + tv.tv_usec/1000;
-}
 
 /**
  * Algorithm for heuristic
