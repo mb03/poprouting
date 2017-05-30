@@ -32,8 +32,7 @@ def generate_graphs():
             #ensures reproducibility (and uniqueness)
             index+=1
     return
-generate_graphs()
-exit()
+
 def composeNetJson(graph):
     Netjson = OrderedDict()
     Netjson['type'] = 'NetworkGraph'
