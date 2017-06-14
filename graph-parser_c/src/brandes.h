@@ -24,7 +24,7 @@ extern "C" {
  * http://www.algo.uni-konstanz.de/publications/b-fabc-01.pdf
  * http://algo.uni-konstanz.de/publications/b-vspbc-08.pdf
  */
-double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_point_val);
+float * betweeness_brandes(struct graph * g, bool endpoints,uint8_t * articulation_point_val);
 /**
  * This is the algorithm described in the linked paper.
  * It reaches the exact results of the previous one, but it is implemented
@@ -32,7 +32,7 @@ double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_
  * to speed up computation.
  * http://algo.uni-konstanz.de/publications/pzedb-hsbcc-12.pdf
  */
-double * betwenness_heuristic(struct graph * g, bool recursive);
+float * betwenness_heuristic(struct graph * g, bool recursive);
 
 
 #ifdef __cplusplus

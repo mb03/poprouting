@@ -4,7 +4,7 @@
 
 void init_node_graph(struct node_graph * n,uint8_t name, int node_graph_id);
 void init_edge_graph(struct edge_graph * e);
-void init_edge_graph_params(struct edge_graph * e,struct node_graph * to,double value);
+void init_edge_graph_params(struct edge_graph * e,struct node_graph * to,float value);
 
 /**
  * Constructor of a graph. Given a graph, it initialities its parameter.
@@ -50,7 +50,7 @@ struct node_graph * add_node_graph(struct graph * g, uint8_t name){//uniqueness 
  * @param value The edge weight
  * @param directed Whether the edge is directed or not
  */
-void add_edge_graph(struct graph * g, uint8_t name_from, uint8_t name_to, double value, bool directed){
+void add_edge_graph(struct graph * g, uint8_t name_from, uint8_t name_to, float value, bool directed){
     struct node_graph *from=0,*to=0,*current =0;
     struct node_list * n=g->nodes.head;
     while(n!=0 && (from==0 || to==0)){ //if there are no more nodes or we have found both edge ends
@@ -96,7 +96,7 @@ void add_edge_graph(struct graph * g, uint8_t name_from, uint8_t name_to, double
  * @param nodefrom An integer pointer used to return the id of @name_from node
  * @param nodeto An integer pointer used to return the id of @name_to node
  */
-void add_edge_graph_return_node_indexes(struct graph * g,uint8_t name_from, uint8_t name_to, double value, bool directed,int  * nodefrom, int * nodeto){
+void add_edge_graph_return_node_indexes(struct graph * g,uint8_t name_from, uint8_t name_to, float value, bool directed,uint8_t  * nodefrom, uint8_t * nodeto){
     struct node_graph *from=0,*to=0,*current =0;
     struct node_list * n=g->nodes.head;
     while(n!=0 && (from==0 || to==0)){ //if there are no more nodes or we have found both edge ends
@@ -171,7 +171,7 @@ void init_edge_graph(struct edge_graph * e){
  * @param to The node that is the vertex of the edge
  * @param value The value of the link
  */
-void init_edge_graph_params(struct edge_graph * e,struct node_graph * to,double value){
+void init_edge_graph_params(struct edge_graph * e,struct node_graph * to,float value){
     e->to=to;
     e->value=value;
 }

@@ -142,7 +142,7 @@ void clear_list(struct list * q){
  * @param q A list
  * @return Whether the list is empty
  */
-int is_empty_list(struct list * q){
+bool is_empty_list(struct list * q){
     return q->head==0;
 }
 
@@ -168,7 +168,7 @@ void init_priority_queue(struct priority_queue * q){
  * @param item An item to be added
  * @param val The value that defines the position (the priority) of it
  */
-void insert_priority_queue(struct priority_queue * q,void * item, double val){
+void insert_priority_queue(struct priority_queue * q,void * item, float val){
     struct  node_priority_queue * n=(struct node_priority_queue*)malloc(sizeof(struct node_priority_queue));
     n->content=item;
     n->value=val;
@@ -216,7 +216,7 @@ void insert_priority_queue(struct priority_queue * q,void * item, double val){
  * @param item An item to be added or present but update in value
  * @param val The value that defines the position (the priority) of it
  */
-void insert_or_update_priority_queue(struct priority_queue * q,void * item, double val){
+void insert_or_update_priority_queue(struct priority_queue * q,void * item, float val){
     if(q->head==0){ //if priority list is empty
         struct  node_priority_queue * n=(struct node_priority_queue*)malloc(sizeof(struct node_priority_queue));
         n->content=item;
@@ -323,6 +323,6 @@ void * dequeue_priority_queue(struct priority_queue * q){
  * @param q A priority queue
  * @return Whether the priority queue is empty
  */
-int is_empty_priority_queue(struct priority_queue * q){
+bool is_empty_priority_queue(struct priority_queue * q){
     return q->head==0;
 }

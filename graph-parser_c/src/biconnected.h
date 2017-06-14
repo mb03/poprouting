@@ -15,28 +15,23 @@ extern "C" {
     
     struct connected_component{
         struct graph g;
-        int * mapping;
-        int * weights;
+        uint8_t * mapping;
+        int16_t * weights;
         struct node_graph * cutpoint;
-        int cutpoint_index;
+        int16_t cutpoint_index;
     };
     
     struct sub_graph{
         struct list connected_components;
-        int size;
+        uint8_t size;
     };
     
     //These function returns the list of list of connected components
     //i.e. a list of connected components for each connected subgraph
     struct list*  tarjan_rec_undir(struct graph * g, 
-            bool * is_articulation_point, int * component_indexes);
+            bool * is_articulation_point, int16_t * component_indexes);
     struct list*  tarjan_iter_undir(struct graph * g, 
-            bool * is_articulation_point, int * component_indexes);
-    
-    //not employed  and completed yet (missing art_poit and 
-    //division in subgraph with componenent indexing)
-    struct list*  tarjan_rec_dir(struct graph * g);
-    struct list*  tarjan_iter_dir(struct graph * g);
+            bool * is_articulation_point, int16_t * component_indexes);
     
     
 #ifdef __cplusplus

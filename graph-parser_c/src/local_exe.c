@@ -3,10 +3,9 @@
 #include <time.h>
 #include "brandes.h"
 #include "local_exe.h"
-extern bool multithread;
+#include <ti/sysbios/knl/Clock.h>
+
 extern bool recursive;
-
-
 
 void create_graph(struct graph * g,int choice){
     switch (choice) {
@@ -359,84 +358,224 @@ void create_graph(struct graph * g,int choice){
             add_edge_graph(g,48,48,1.0, 0);
             add_edge_graph(g,49,49,1.0, 0);
             break;
+        case 4:
+            add_edge_graph(g,0,1,1.0, 0);
+            add_edge_graph(g,0,2,1.0, 0);
+            add_edge_graph(g,0,3,1.0, 0);
+            add_edge_graph(g,0,4,1.0, 0);
+            add_edge_graph(g,0,5,1.0, 0);
+            add_edge_graph(g,0,6,1.0, 0);
+            add_edge_graph(g,0,7,1.0, 0);
+            add_edge_graph(g,0,8,1.0, 0);
+            add_edge_graph(g,0,9,1.0, 0);
+            add_edge_graph(g,0,10,1.0, 0);
+            add_edge_graph(g,0,11,1.0, 0);
+            add_edge_graph(g,0,12,1.0, 0);
+            add_edge_graph(g,0,13,1.0, 0);
+            add_edge_graph(g,0,14,1.0, 0);
+            add_edge_graph(g,0,15,1.0, 0);
+            add_edge_graph(g,0,16,1.0, 0);
+            add_edge_graph(g,0,17,1.0, 0);
+            add_edge_graph(g,0,18,1.0, 0);
+            add_edge_graph(g,0,19,1.0, 0);
+            add_edge_graph(g,0,20,1.0, 0);
+            add_edge_graph(g,0,21,1.0, 0);
+            add_edge_graph(g,0,22,1.0, 0);
+            add_edge_graph(g,0,23,1.0, 0);
+            add_edge_graph(g,0,24,1.0, 0);
+            add_edge_graph(g,0,25,1.0, 0);
+            add_edge_graph(g,0,26,1.0, 0);
+            add_edge_graph(g,0,27,1.0, 0);
+            add_edge_graph(g,0,28,1.0, 0);
+            add_edge_graph(g,0,29,1.0, 0);
+            add_edge_graph(g,0,30,1.0, 0);
+            add_edge_graph(g,0,31,1.0, 0);
+            add_edge_graph(g,0,32,1.0, 0);
+            add_edge_graph(g,0,33,1.0, 0);
+            break;
+        case 5:
+            add_edge_graph(g,0,1,1.0, 0);
+                      add_edge_graph(g,1,2,1.0, 0);
+                      add_edge_graph(g,2,3,1.0, 0);
+                      add_edge_graph(g,3,4,1.0, 0);
+                      add_edge_graph(g,4,5,1.0, 0);
+                      add_edge_graph(g,5,6,1.0, 0);
+                      add_edge_graph(g,6,7,1.0, 0);
+                      add_edge_graph(g,7,8,1.0, 0);
+                      add_edge_graph(g,8,9,1.0, 0);
+                      add_edge_graph(g,9,10,1.0, 0);
+                      add_edge_graph(g,10,11,1.0, 0);
+                      add_edge_graph(g,11,12,1.0, 0);
+                      add_edge_graph(g,12,13,1.0, 0);
+                      add_edge_graph(g,13,14,1.0, 0);
+                      add_edge_graph(g,14,15,1.0, 0);
+                      add_edge_graph(g,15,16,1.0, 0);
+                      add_edge_graph(g,16,17,1.0, 0);
+                      add_edge_graph(g,17,18,1.0, 0);
+                      add_edge_graph(g,18,19,1.0, 0);
+                      add_edge_graph(g,19,0,1.0, 0);
+                                add_edge_graph(g,0,20,1.0, 0);
+                                add_edge_graph(g,20,21,1.0, 0);
+                                add_edge_graph(g,22,21,1.0, 0);
+                                add_edge_graph(g,22,23,1.0, 0);
+                                add_edge_graph(g,23,24,1.0, 0);
+                                add_edge_graph(g,24,25,1.0, 0);
+                                add_edge_graph(g,25,26,1.0, 0);
+                                add_edge_graph(g,26,27,1.0, 0);
+                                add_edge_graph(g,27,28,1.0, 0);
+                                add_edge_graph(g,28,29,1.0, 0);
+                                add_edge_graph(g,29,30,1.0, 0);
+                                add_edge_graph(g,30,31,1.0, 0);
+                                add_edge_graph(g,31,32,1.0, 0);
+                                add_edge_graph(g,32,33,1.0, 0);
+                                add_edge_graph(g,33,34,1.0, 0);
+                                add_edge_graph(g,34,35,1.0, 0);
+                                add_edge_graph(g,35,36,1.0, 0);
+                                add_edge_graph(g,36,37,1.0, 0);
+                                add_edge_graph(g,37,38,1.0, 0);
+                                add_edge_graph(g,38,20,1.0, 0);
+            break;
+        case 6:
+            add_edge_graph(g,1,2,1.0,0);
+            add_edge_graph(g,2,3,1.0,0);
+            add_edge_graph(g,3,4,1.0,0);
+            add_edge_graph(g,4,5,1.0,0);
+            add_edge_graph(g,5,6,1.0,0);
+            add_edge_graph(g,6,1,1.0,0);
+            add_edge_graph(g,0,1,1.0,0);
+            add_edge_graph(g,7,8,1.0,0);
+            add_edge_graph(g,8,9,1.0,0);
+            add_edge_graph(g,9,10,1.0,0);
+            add_edge_graph(g,10,11,1.0,0);
+            add_edge_graph(g,11,12,1.0,0);
+            add_edge_graph(g,12,7,1.0,0);
+            add_edge_graph(g,0,7,1.0,0);
+            add_edge_graph(g,13,14,1.0,0);
+            add_edge_graph(g,14,15,1.0,0);
+            add_edge_graph(g,15,16,1.0,0);
+            add_edge_graph(g,16,17,1.0,0);
+            add_edge_graph(g,17,18,1.0,0);
+            add_edge_graph(g,18,13,1.0,0);
+            add_edge_graph(g,0,13,1.0,0);
+            add_edge_graph(g,19,20,1.0,0);
+            add_edge_graph(g,20,21,1.0,0);
+            add_edge_graph(g,21,22,1.0,0);
+            add_edge_graph(g,22,23,1.0,0);
+            add_edge_graph(g,23,24,1.0,0);
+            add_edge_graph(g,24,19,1.0,0);
+            add_edge_graph(g,0,19,1.0,0);
+            add_edge_graph(g,25,26,1.0,0);
+            add_edge_graph(g,26,27,1.0,0);
+            add_edge_graph(g,27,28,1.0,0);
+            add_edge_graph(g,28,29,1.0,0);
+            add_edge_graph(g,29,30,1.0,0);
+            add_edge_graph(g,30,25,1.0,0);
+            add_edge_graph(g,0,25,1.0,0);
+            break;
     }
-    
-    
-    
-    
+    printf("\ncreated\n");
 }
 
-
-double run_test(struct graph * g,bool heuristic,bool rec) {
+int run_test(struct graph * g,bool heuristic,bool rec) {
     recursive=rec;
-    double * bc;
-    clock_t t = clock();
+    Uint32 time=0;
     if(heuristic){
-        bc=(double*)betwenness_heuristic(g,recursive);
+        time=Clock_getTicks();
+        betwenness_heuristic(g,recursive);
+        time=Clock_getTicks()-time;
     }else{
-        bc=betweeness_brandes(g,true,0);
+        time=Clock_getTicks();
+        betweeness_brandes(g,true,0);
+        time=Clock_getTicks()-time;
     }
-    t = clock() - t;
-    return ((double)t)/CLOCKS_PER_SEC;
+    return (int)time;
 }
 
-void run_tests(int choice,bool heu,bool rec){
-    struct graph g;
-    init_graph(&g);
-    create_graph(&g,choice);
-    double var, mean;
-    double t=0;
+void run_tests(bool heu,bool rec, struct graph *g){
+    float var, mean;
+    float t=0;
     int i=0;
-    double vals[10];
-    for(;i<10;i++){
-        double tmp=run_test(&g,heu,rec);
+    float vals[5];
+    for(;i<5;i++){
+        float tmp=(float)run_test(g,heu,rec);
         t+=tmp;
         vals[i]=tmp;
+        printf("Exe %d: %f\n",i,tmp);
     }
-    mean=t/10;
-    double v=0;
+    mean=t/5;
+    float v=0;
     i=0;
-    for(;i<10;i++){
-        double tmp=mean-vals[i];
+    for(;i<5;i++){
+        float tmp=mean-vals[i];
         v+=tmp*tmp;
     }
-    var=v/10;
-    printf("var\t%.12f\tmean\t%f\n",var,mean);
+    var=v/5;
+    printf("mean\t%f+-(%f)\n",mean,var);
+
 }
 
-void battery_test() {
-    printf("fbk_c18_p15.txt\n");
-    printf("brandes\t");
-    run_tests(0,0,0);
-    printf("rec\t");
-    run_tests(0,1,1);
-    printf("ite\t");
-    run_tests(0,1,0);
-    printf("indriya_c26_p31.txt\n");
-    printf("brandes\t");
-    run_tests(1,0,0);
-    printf("rec\t");
-    run_tests(1,1,1);
-    printf("ite\t");
-    run_tests(1,1,0);
-    printf("indriya_c26_p07.txt\n");
-    printf("brandes\t");
-    run_tests(2,0,0);
-    printf("rec\t");
-    run_tests(2,1,1);
-    printf("ite\t");
-    run_tests(2,1,0);
-    printf("fbk_c26_p31.txt\n");
-    printf("brandes\t");
-    run_tests(3,0,0);
-    printf("rec\t");
-    run_tests(3,1,1);
-    printf("ite\t");
-    run_tests(3,1,0);
+void battery_test(uint8_t choice) {
+    struct graph g;
+    init_graph(&g);
+    /*
+    switch (choice) {
+          case 0: printf("fbk_c18_p15.txt");
+              break;
+          case 1: printf("indriya_c26_p31.txt");
+              break;
+          case 2: printf("indriya_c26_p07.txt");
+              break;
+          case 3: printf("fbk_c26_p31.txt");
+              break;
+          default:printf("synthetic");break;
+    }
+    */
+    create_graph(&g,choice);
+   // run_tests(0,0, &g);
+    //run_tests(1,1, &g);
+    run_tests(1,0, &g);
+    //0
+    //2536+-(0)
+    //3111.199951+-(2.160000)
+    //
+    //1
+    //6063.399902+-(12.240001)
+    //
+    //2
+    //    1495.199951+-(0.160000)
+    //    2154.000000+-(74.400002)
+    //    2852.800049+-(2.160000)
+    //3
+    //4 snake
+    //12864.599609
+    // 14368.000000
+    //5 2part
+   //  16082.400391
+    // 19888.000000
+    //6 5part
+    //10862.000000
+    free_graph(&g);
+}
+/*
+#include <ti/sysbios/knl/Clock.h>
+#include <ti/sysbios/BIOS.h>
+static inline Float CLK_cpuCyclesPerLtime()
+{
+    xdc_runtime_Types_FreqHz freq1;
+
+    ti_sysbios_BIOS_getCpuFreq(&freq1);
+    return ((((float)freq1.lo / 1000) * (float)ti_sysbios_knl_Clock_tickPeriod) / 1000);
 }
 
+void v(){
+    UInt32 time1 = ti_sysbios_knl_Clock_getTicks();
+       int j;
+       for(j=0;j<10000000;j++){}
+       UInt32 time2 = ti_sysbios_knl_Clock_getTicks();
+       UInt32 CPUcycles = (time2 - time1) * CLK_cpuCyclesPerLtime();
 
-int main() {
-battery_test();
-    return 0;
-}
+       printf("%ld %ld\n", time1,time2);
+       printf("System time in clk0Fxn = %lu\n", (ULong)CPUcycles);
+
+}*/
+

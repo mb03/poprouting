@@ -11,6 +11,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -19,7 +21,7 @@ extern "C" {
      * queue. 
      * The list works both with LIFO and FIFO policies.
      * The priority queue offers all operation needed for dijkstra algorithm.
-     * The underlying implementation for both is the double linked list.
+     * The underlying implementation for both is the float linked list.
      * Further detail in list.c
      */
     
@@ -33,20 +35,20 @@ extern "C" {
     struct list {
         struct node_list * head;
         struct node_list * tail;
-        int size;
+        uint8_t size;
     };
     
     struct node_priority_queue {
         void * content;
         struct node_priority_queue * next;
         struct node_priority_queue * prev;
-        double value;
+        float value;
     };
     
     struct priority_queue {
         struct node_priority_queue * head;
         struct node_priority_queue * tail;
-        int size;
+        uint8_t size;
     };
     
     void init_list(struct list * q);
@@ -57,14 +59,14 @@ extern "C" {
     void * pop_list(struct list * q);
     void print_list(struct list * q);
     void clear_list(struct list * q);
-    int is_empty_list(struct list * q);
+    bool is_empty_list(struct list * q);
     
     void init_priority_queue(struct priority_queue * q);
-    void insert_priority_queue(struct priority_queue * q,void * item, double val);
-    void insert_or_update_priority_queue(struct priority_queue * q,void * item, double val);
+    void insert_priority_queue(struct priority_queue * q,void * item, float val);
+    void insert_or_update_priority_queue(struct priority_queue * q,void * item, float val);
     void * dequeue_priority_queue(struct priority_queue * q);
     void print_priority_queue(struct priority_queue * q);
-    int is_empty_priority_queue(struct priority_queue * q);
+    bool is_empty_priority_queue(struct priority_queue * q);
     
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void battery_test();
+void battery_test(uint8_t choice);
 
 
 
