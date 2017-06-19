@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "brandes.h"
 #include "local_exe.h"
-#include <ti/sysbios/knl/Clock.h>
-
+//#include <ti/sysbios/knl/Clock.h>
+#include <sys/time.h>
 extern bool recursive;
 
 void create_graph(struct graph * g,int choice){
@@ -475,7 +476,7 @@ void create_graph(struct graph * g,int choice){
     }
     printf("\ncreated\n");
 }
-
+/*
 int run_test(struct graph * g,bool heuristic,bool rec) {
     recursive=rec;
     Uint32 time=0;
@@ -517,7 +518,7 @@ void run_tests(bool heu,bool rec, struct graph *g){
 void battery_test(uint8_t choice) {
     struct graph g;
     init_graph(&g);
-    /*
+
     switch (choice) {
           case 0: printf("fbk_c18_p15.txt");
               break;
@@ -529,7 +530,7 @@ void battery_test(uint8_t choice) {
               break;
           default:printf("synthetic");break;
     }
-    */
+   
     create_graph(&g,choice);
    // run_tests(0,0, &g);
     //run_tests(1,1, &g);
@@ -555,7 +556,7 @@ void battery_test(uint8_t choice) {
     //6 5part
     //10862.000000
     free_graph(&g);
-}
+}*/
 /*
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/BIOS.h>
@@ -579,3 +580,80 @@ void v(){
 
 }*/
 
+//local tests to infer where the heuristic performs better with very low nodes 
+//count (10-150)
+long getMicrotime(){
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+}
+
+int local_run_test(struct graph * g,bool heuristic,bool rec) {
+    recursive=rec;
+    long time=0;
+    if(heuristic){
+        time = getMicrotime();
+        betwenness_heuristic(g,recursive);
+        time = getMicrotime()-time;
+    }else{
+        time = getMicrotime();
+        betweeness_brandes(g,true,0);
+        time = getMicrotime()-time;
+    }
+    return (int)time;
+}
+
+void local_run_tests(bool heu,bool rec, struct graph *g){
+    float var, mean;
+    float t=0;
+    int i=0;
+    float vals[10];
+    for(;i<10;i++){
+        float tmp=(float)local_run_test(g,heu,rec);
+        t+=tmp;
+        vals[i]=tmp;
+    }
+    mean=t/10;
+    float v=0;
+    i=0;
+    for(;i<10;i++){
+        float tmp=mean-vals[i];
+        v+=tmp*tmp;
+    }
+    var=v/10;
+    if(heu){
+    printf("heuristic\t");
+    }else{
+    printf("brandes\t\t");
+    }
+    printf("mean\t%f+-(%f)\n",mean,var);
+
+}
+
+int main(int argc, char** argv) {
+    if (argc<2){
+        printf("Missing args\n");
+    }
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen(argv[1], "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+    struct graph g;
+    init_graph(&g);
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        int s,t;
+        sscanf( line,"%d %d {}", &s, &t);
+        add_edge_graph(&g,(uint8_t)s,(uint8_t)t,1.0, 0);
+    }
+    local_run_tests(0,0, &g);
+    local_run_tests(1,1, &g);
+    fclose(fp);
+    if (line)
+        free(line);
+    exit(EXIT_SUCCESS);
+}
