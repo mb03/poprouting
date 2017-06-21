@@ -22,7 +22,18 @@
 #include "prince.h"
 #include <unistd.h>
 #include <time.h>
+#include <sys/time.h>
 #include "../../performance_measure/performance.h"
+
+long long current_timestamp() {
+    struct timeval te; 
+    gettimeofday(&te, NULL); // get current time
+    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // caculate milliseconds
+    // printf("milliseconds: %lld\n", milliseconds);
+    return milliseconds;
+}
+
+
 char* read_file_content(char *filename)
 {
     char *buffer = NULL;
@@ -94,18 +105,15 @@ main(int argc, char* argv[]){
         set_last_val(&dl1);
         if(ph->rp->self_id)
             ph->self_id = strdup(ph->rp->self_id);
-        clock_t start = clock();
-	clock_t t = clock();
+        long long time=current_timestamp();
         graph_parser_calculate_bc(ph->gp);
-	t = clock() - t;
-	double time=((double)t)/CLOCKS_PER_SEC;
-        clock_t end = clock();
+        time=current_timestamp()-time;
         graph_parser_compose_degree_bc_map(ph->gp, ph->bc_degree_map);
         int nodes_num_to_log=ph->bc_degree_map->size;
 	ph->opt_t.exec_time=time;
 	ph->opt_t.algo_time=0;
         //ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
-        printf("Calculation time: %fs\n", ph->opt_t.exec_time);
+        printf("\nCalculation time: %llu ms\n", ph->opt_t.exec_time);
         if (!compute_timers(ph)){
             delete_prince_handler(ph);
             continue;
