@@ -188,7 +188,7 @@ char logger(char * pid, int interval){
     strcpy(status2, "./mem_usage ");
     strcat(status2, pid);
     while(1){
-    	get_memory_info_map(status2);
+    	//get_memory_info_map(status2);
         log_memory_info(status);
         usleep(interval);
     }
