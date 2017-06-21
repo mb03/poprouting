@@ -158,9 +158,9 @@ main(int argc, char* argv[]){
         clock_t start = clock();
 	clock_t t = clock();
         graph_parser_calculate_bc(ph->gp);
-	t = clock() - t;
-	ph->opt_t.algo_time=((double)t)/CLOCKS_PER_SEC;
-        clock_t end = clock();
+	long long time=current_timestamp();
+        graph_parser_calculate_bc(ph->gp);
+        time=current_timestamp()-time;
         ph->bc_degree_map = (map_id_degree_bc *) malloc(sizeof(map_id_degree_bc));
         ph->bc_degree_map->size=gp_p->g.nodes.size;
         ph->bc_degree_map->map=0;
@@ -168,7 +168,7 @@ main(int argc, char* argv[]){
         int nodes_num_to_log=ph->bc_degree_map->size;
         //ph->opt_t.exec_time = (double)(end - start) / CLOCKS_PER_SEC;
         overall_start= clock() - overall_start;
-	ph->opt_t.exec_time=((double)overall_start)/CLOCKS_PER_SEC;
+	ph->opt_t.exec_time=(double)time;//((double)overall_start)/CLOCKS_PER_SEC;
         printf("\nCalculation time: %fs\n", ph->opt_t.exec_time);
 	if (!compute_timers(ph)){
             delete_prince_handler(ph);
