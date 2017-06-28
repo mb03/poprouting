@@ -14,7 +14,7 @@ def generate_graphs():
     ge = Gen()
     index=0
     r=Random(1234)
-    for i in range(1,2):
+    for i in range(2,21):
         file="data/"+str(i*100)
         mkdir(file)
         print(i)
@@ -32,7 +32,8 @@ def generate_graphs():
             #ensures reproducibility (and uniqueness)
             index+=1
     return
-
+generate_graphs()
+exit(9)
 def composeNetJson(graph):
     Netjson = OrderedDict()
     Netjson['type'] = 'NetworkGraph'

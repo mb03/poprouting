@@ -108,7 +108,7 @@ gettimeofday(&tv,NULL);
     printf("realtime  %lu\n",time);
     return ((double)t)/CLOCKS_PER_SEC;
 }
-
+/*
 int main(int argc, char** argv) {
 if(argc<3){
         printf("Usage a.out heu thredead. E.g. ./a.out 1 1. Exiting.\n");
@@ -138,7 +138,7 @@ var/=repetitions;
 printf("res %f +-(%f)\n",m,var);
 free(values);
 }
-/*
+*/
 int main(int argc, char** argv) {
     if(argc==1){
         printf("I need to know if i have to use heuristic. Exiting.\n");
@@ -176,4 +176,4 @@ int main(int argc, char** argv) {
     printf("}\n");
     delete_graph_parser(cgp);
     return (EXIT_SUCCESS);
-}*/
+}

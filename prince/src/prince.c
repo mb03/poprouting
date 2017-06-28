@@ -138,13 +138,11 @@ main(int argc, char* argv[]){
     struct graph_parser * gp_p=(struct graph_parser *)ph->gp ;
     ph->rp = new_plugin_p(ph->host, ph->port, ph->gp, ph->json_type);
     do{
-        logs("events.txt","loop");
         struct  data_last dl;
         set_last_val(&dl);
         log_start((char*)"c_cpu_tot.txt");
         sleep(ph->refresh);
 	clock_t overall_start = clock();
-        logs("events.txt","get_topology");
         if(!get_topology_p(ph->rp)){
             printf("Error getting topology");
             continue;
@@ -171,7 +169,6 @@ main(int argc, char* argv[]){
         overall_start= clock() - overall_start;
 	ph->opt_t.exec_time=(double)time;//((double)overall_start)/CLOCKS_PER_SEC;
 	ph->opt_t.algo_time=0;
-        logs("events.txt","Calculation");
         printf("\nCalculation time: %fs\n", ph->opt_t.exec_time);
 	if (!compute_timers(ph)){
             delete_prince_handler(ph);
@@ -180,9 +177,6 @@ main(int argc, char* argv[]){
         printf("Id of the node we are computing is: %s\n", ph->self_id);
 	double exe1,exe2;
         log_cpu_info(get_percentage(&dl,&exe1),(char*)"c_cpu_tot.txt",nodes_num_to_log);
-        //log_cpu_info(get_percentage(&dl1,&exe2),(char*)"c_cpu_algo.txt",nodes_num_to_log);
-	//ph->opt_t.exec_time=exe2;
-        logs("events.txt","pushing");
         if (!push_timers_p(ph->rp, ph->opt_t)){
             delete_prince_handler(ph);
             continue;
@@ -191,13 +185,10 @@ main(int argc, char* argv[]){
         gp_p->bc=0;
         bc_degree_map_delete(ph->bc_degree_map);
         free_graph(&(gp_p->g));
-        logs("events.txt","exiting");
-	break;//TODO: remove
         init_graph(&(gp_p->g));
     }while(ph->refresh);
     //delete_plugin_p(ph->rp);
     delete_prince_handler(ph);
-        logs("events.txt","ended all");
 #endif	
     return 0;
 }

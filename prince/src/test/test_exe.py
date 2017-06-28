@@ -107,6 +107,9 @@ for i in range(start,end,jump):
         #c_t.append(timer)
         actual_res=nx.betweenness_centrality(g,endpoints=True,weight='weight')
         actual_res= {int(k):round(v,rounding) for k,v in actual_res.iteritems()}
+        print("actual_res",actual_res)
+        print(val1)
+        print(val2)
         if (not (actual_res==val1 and val1==val2)):
             print([(n) for n in nx.biconnected_components(g)])
             errors={k:(v-val2[k],v,val2[k]) for k,v in actual_res.iteritems() if v-val2[k]!=0}

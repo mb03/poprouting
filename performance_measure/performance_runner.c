@@ -21,7 +21,8 @@ int main(int argc, char** argv) {
     if (argc<2){
 	return;
     }
-    logger(argv[1],2000);
+    logger(argv[1],2000); //smaller graphs
+    //logger(argv[1],20000); //bigger graphs
     return (EXIT_SUCCESS);
 }
 

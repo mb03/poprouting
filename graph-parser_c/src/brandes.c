@@ -64,7 +64,6 @@ const int INFINITY_DIST=INT_MAX;
 double * betweeness_brandes(struct graph * g, bool endpoints,int * articulation_point_val){
     int node_num=g->nodes.size;
     double * ret_val=( double *)malloc(node_num*sizeof(double));
-    return ret_val;
     struct priority_queue q;
     struct list S;
     init_priority_queue(&q);
@@ -474,8 +473,7 @@ void compute_heuristic_wo_scale(struct graph * g,
     int node_num=g->nodes.size;
     int i;
     node_num=cc_node_num;
-    
-    logs("events.txt","tree_edges");
+
     struct list* tree_edges=connected_components_to_tree(g,connected_components,is_articulation_point);
     compute_component_tree_weights(g,tree_edges,node_num);
     i=0;
@@ -501,58 +499,12 @@ void compute_heuristic_wo_scale(struct graph * g,
         i++;
     }
     
-    logs("events.txt","tree ended");
     struct node_list * ccs_iterator;
     int bcc_num=connected_components->size;
     
-    logs("events.txt","multithread started");
     if(multithread && bcc_num>1){
         int i=0;
-        /* struct heuristic_cc_args * args=(struct heuristic_cc_args *)malloc(sizeof(struct heuristic_cc_args )*bcc_num);
-         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
-         struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
-         args[i].cc=cc;
-         args[i].is_articulation_point=is_articulation_point;
-         args[i].node_num=&node_num;
-         args[i].ret_val=0;
-         i++;
-         }
-         
-         logs("events.txt","pthread_create");
-         int threadnum=0;
-         for( i=0;i<bcc_num;i++){//start threads for bigger components
-         if(args[i].cc->g.nodes.size>2){
-         threadnum++;
-         pthread_create(&args[i].t, NULL, &run_brandes_heu, (void *)(args+i));
-         }
-         }
-         printf("\n\n\nthreadnum %d %d %d\n",threadnum,(int)sizeof(struct heuristic_cc_args ),bcc_num);
-         logs("events.txt","pthread_create1");
-         for( i=0;i<bcc_num;i++){//handle locally all leaves
-         if(args[i].cc->g.nodes.size<=2){
-         run_brandes_heu(args+i);
-         int j;
-         for(j=0;j<args[i].cc->g.nodes.size;j++){
-         bc[args[i].cc->mapping[j]] += args[i].ret_val[j];
-         }
-         free(args[i].ret_val);
-         }
-         }
-         logs("events.txt","pthread_create2");
-         for( i=0;i<bcc_num;i++){//join threads after local work is done
-         if(args[i].cc->g.nodes.size>2){
-         pthread_join(args[i].t, NULL);
-         int j;
-         for(j=0;j<args[i].cc->g.nodes.size;j++){
-         bc[args[i].cc->mapping[j]] += args[i].ret_val[j];
-         }
-         free(args[i].ret_val);
-         }
-         
-         }
-         free(args);*/
-        
-        logs("events.txt","pthread1");
+
         struct list meaningful_CC;
         init_list(&meaningful_CC);
         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
@@ -567,14 +519,12 @@ void compute_heuristic_wo_scale(struct graph * g,
                 enqueue_list(&meaningful_CC,(void*)args);
             }
         }
-        printf("\n\n\nsize %d\n",(int)(sizeof(struct heuristic_cc_args )*meaningful_CC.size));
-        logs("events.txt","pthread1.5");
+
         struct node_list * great_cc_iterator=meaningful_CC.head;
         for(;great_cc_iterator!=0;great_cc_iterator=great_cc_iterator->next){
             struct heuristic_cc_args * args=(struct heuristic_cc_args *)great_cc_iterator->content;
             pthread_create(&(args->t), NULL, &run_brandes_heu, (void *)(args+i));
         }
-        logs("events.txt","pthread2");
         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
             struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
             if(cc->g.nodes.size<=2){
@@ -586,7 +536,6 @@ void compute_heuristic_wo_scale(struct graph * g,
                 free(ret_val);
             }
         }
-        logs("events.txt","pthread3");
         while(! is_empty_list(&meaningful_CC)){
             struct heuristic_cc_args * args=(struct heuristic_cc_args *)pop_list(&meaningful_CC);
             pthread_join(args->t, NULL);
@@ -596,33 +545,6 @@ void compute_heuristic_wo_scale(struct graph * g,
             }
             free(args->ret_val);
         }
-        logs("events.txt","pthread_ended");
-        /*
-         //TODO :remove
-         int size=3;
-         //void logs(char *filename,char * content);//TODO :remove
-         //TODO :remove
-         while( size<20000){
-         for( i=0;i<bcc_num;i++){
-         if(args[i].cc->g.nodes.size==size){
-         char str[128];
-         sprintf(str, "Starting heu with %d nodes", args[i].cc->g.nodes.size);
-         printf("Starting heu with %d nodes", args[i].cc->g.nodes.size);
-         pthread_create(&args[i].t, NULL, &run_brandes_heu, (void *)(args+i));
-         pthread_join(args[i].t, NULL);
-         free(args[i].ret_val);
-         }
-         
-         }
-         size ++;
-         }
-         free(args);
-         //TODO :remove
-         * 
-         */
-        
-        
-        
     }else{
         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
             struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
@@ -696,13 +618,11 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
         connected_component_indexes[i]=-1;
     }
     struct list* connected_components_subgraphs;
-    logs("events.txt","biconnected");
     if(recursive){
         connected_components_subgraphs=tarjan_rec_undir(g,is_articulation_point,connected_component_indexes);
     }else {
         connected_components_subgraphs=tarjan_iter_undir(g,is_articulation_point,connected_component_indexes);
     }
-    logs("events.txt","biconnected ended");
     
     int biconnected_component_num=-1,result_size=-1;
     float standard_deviation_bic=-1;
@@ -764,11 +684,9 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     
     int connected_component_index=0;
     int cc_num=connected_components_subgraphs->size;
-    logs("events.txt","algo started");
     if(multithread && cc_num>1){
         i=0;
         
-        logs("events.txt","starting  subgraph");
         struct multithread_subgraph_struct * args=(struct multithread_subgraph_struct *)malloc(sizeof(struct multithread_subgraph_struct )*cc_num);
         struct node_list * subgraph_iterator=connected_components_subgraphs->head;
         for(;subgraph_iterator!=0;subgraph_iterator=subgraph_iterator->next){
@@ -782,7 +700,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
             args[i].cc_index=i;
             i++;
         }
-        logs("events.txt","crearing  subgraph threads");
         for( i=0;i<cc_num;i++)
             pthread_create(&args[i].t, NULL, &run_subgraph, (void *)(args+i));
         
@@ -790,7 +707,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
             pthread_join(args[i].t, NULL);
         }
         free(args);
-        logs("events.txt","ending  subgraph");
     }else{
         // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
         if(cc_num>1||use_heu_on_single_biconnected){
@@ -810,7 +726,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
             return betweeness_brandes(g,true,0);
         }
     }
-    logs("events.txt","algo ended");
     
     if(node_num>2){
         double scale=1/(((double)(node_num-1))*((double)(node_num-2)));
@@ -831,8 +746,6 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
     free(is_articulation_point);
     free(connected_component_indexes);
     
-    
-    logs("events.txt","returning");
     return ret_val;
 }
 
