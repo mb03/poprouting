@@ -423,7 +423,7 @@ double * compute_traffic_matrix_and_centrality(  struct connected_component * cc
     return ret_val;
 }
 
-struct heuristic_cc_args{
+struct heuristic_cc_args_struct{
     struct connected_component * cc;
     int * node_num;
     bool *is_articulation_point;
@@ -441,7 +441,7 @@ struct heuristic_cc_args{
  * @return nothing, it respects the typing for a pthread thread
  */
 void * run_brandes_heu(void *arguments){
-    struct heuristic_cc_args *args = ( struct heuristic_cc_args *)arguments;
+    struct heuristic_cc_args_struct *args = ( struct heuristic_cc_args_struct *)arguments;
     args->ret_val=compute_traffic_matrix_and_centrality(args->cc,*args->node_num,args->is_articulation_point);
     return 0;
 }
@@ -510,7 +510,7 @@ void compute_heuristic_wo_scale(struct graph * g,
         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
             struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
             if(cc->g.nodes.size>2){
-                struct heuristic_cc_args * args=(struct heuristic_cc_args *)malloc(sizeof(struct heuristic_cc_args ));
+                struct heuristic_cc_args_struct * args=(struct heuristic_cc_args_struct *)malloc(sizeof(struct heuristic_cc_args_struct ));
                 struct connected_component * cc= ( struct connected_component *)ccs_iterator->content;
                 args->cc=cc;
                 args->is_articulation_point=is_articulation_point;
@@ -522,7 +522,7 @@ void compute_heuristic_wo_scale(struct graph * g,
 
         struct node_list * great_cc_iterator=meaningful_CC.head;
         for(;great_cc_iterator!=0;great_cc_iterator=great_cc_iterator->next){
-            struct heuristic_cc_args * args=(struct heuristic_cc_args *)great_cc_iterator->content;
+            struct heuristic_cc_args_struct * args=(struct heuristic_cc_args_struct *)great_cc_iterator->content;
             pthread_create(&(args->t), NULL, &run_brandes_heu, (void *)(args+i));
         }
         for(ccs_iterator=connected_components->head;ccs_iterator!=0;ccs_iterator=ccs_iterator->next){
@@ -537,7 +537,7 @@ void compute_heuristic_wo_scale(struct graph * g,
             }
         }
         while(! is_empty_list(&meaningful_CC)){
-            struct heuristic_cc_args * args=(struct heuristic_cc_args *)pop_list(&meaningful_CC);
+            struct heuristic_cc_args_struct * args=(struct heuristic_cc_args_struct *)pop_list(&meaningful_CC);
             pthread_join(args->t, NULL);
             int j;
             for(j=0;j<args->cc->g.nodes.size;j++){
