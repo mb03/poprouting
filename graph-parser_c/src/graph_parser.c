@@ -85,9 +85,10 @@ int graph_parser_compose_degree_bc_map(c_graph_parser* v, map_id_degree_bc *map)
  */
 void delete_graph_parser(void* v){
     struct graph_parser * gp=(struct graph_parser *)v;
-    free_graph(&gp->g);
-    if(gp->bc!=0)
-    free(gp->bc);
+    //free_graph(&gp->g);
+    if(gp->bc!=0){
+        free(gp->bc);
+    }
     free(gp);
     //gp->bc=0;
 }
