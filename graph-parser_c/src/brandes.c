@@ -708,8 +708,9 @@ double * betwenness_heuristic(struct graph * g, bool recursive){
         }
         free(args);
     }else{
-        // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
-        if(cc_num>1||use_heu_on_single_biconnected){
+
+	int bcc_num=((struct sub_graph *)connected_components_subgraphs->head->content)->connected_components.size;
+        if(cc_num>1||(use_heu_on_single_biconnected || bcc_num > 1)){
             struct node_list * subgraph_iterator=connected_components_subgraphs->head;
             for(;subgraph_iterator!=0;subgraph_iterator=subgraph_iterator->next){
                 struct sub_graph * sg=(struct sub_graph *)subgraph_iterator->content;

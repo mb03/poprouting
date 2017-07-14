@@ -42,8 +42,13 @@ int main(int argc, char** argv) {
     multithread=false;
     if(argc==4){
 	multithread=atoi(argv[3])==1;
-    }
-    struct graph * g=read_graph_from_file("input.edgelist");
+    } 
+    struct graph * g=0;
+   if(argc==5){
+	g=read_graph_from_file(argv[4]);
+    }else{
+g=read_graph_from_file("input.edgelist");
+}
     double * bc;
     if(heuristic){
         bc=(double*)betwenness_heuristic(g,recursive);
