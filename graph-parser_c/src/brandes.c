@@ -520,7 +520,6 @@ float * betwenness_heuristic(struct graph * g, bool recursive){
 	 uint8_t connected_component_index=0;
 	uint8_t cc_num=connected_components_subgraphs->size;
         // struct sub_graph * sg=(struct sub_graph *)dequeue_list(connected_components_subgraphs);
-        if(cc_num>1){
             struct node_list * subgraph_iterator=connected_components_subgraphs->head;
             for(;subgraph_iterator!=0;subgraph_iterator=subgraph_iterator->next){
                 struct sub_graph * sg=(struct sub_graph *)subgraph_iterator->content;
@@ -528,14 +527,7 @@ float * betwenness_heuristic(struct graph * g, bool recursive){
                         is_articulation_point,ret_val,connected_component_indexes,
                         sg->size,connected_component_index++);
             }
-        }else {
-            clear_list(connected_components_subgraphs);
-            free(connected_components_subgraphs);
-            free(is_articulation_point);
-            free(connected_component_indexes);
-            free(ret_val);
-            return betweeness_brandes(g,true,0);
-        }
+
     
     if(node_num>2){
         float scale=1/(((float)(node_num-1))*((float)(node_num-2)));
